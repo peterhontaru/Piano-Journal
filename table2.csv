@@ -1,0 +1,29 @@
+Project,Genre,Duration,Date_Start,Date_End,Days_Practiced,Cumulative_Duration,ABRSM,Standard,Length
+Elton John - Rocket man,Modern,2791,08/12/2020,13/04/2021,126,847,7,Performance,240
+C. Hartmann - The little ballerina,Romantic,1264,14/07/2020,27/10/2020,105,715,6,Performance,120
+Chopin - Waltz in Fm,Romantic,1645,18/04/2020,27/10/2020,192,612,6,Performance,120
+Ibert - Sérénade sur l’eau,Modern,623,24/09/2020,27/10/2020,33,755,6,Performance,100
+Clementi - Sonatina no 3 - Mov 3,Classical,1220,04/06/2020,11/07/2020,37,669,4,Performance,120
+Clementi - Sonatina no 3 - Mov 2,Classical,187,04/06/2020,24/06/2020,20,669,1,Performance,60
+Clementi - Sonatina no 3 - Mov 1,Classical,1772,07/04/2020,05/06/2020,59,594,4,Performance,160
+Bach - Invention 4 in Dm,Baroque,1240,25/01/2020,26/03/2020,61,494,5,Performance,100
+Chopin - Contredanse in Gb,Romantic,1375,16/01/2020,21/03/2020,65,480,6,Performance,130
+Elton John - Your song (Arr Cornick),Modern,2141,21/11/2019,07/02/2020,78,430,5,Performance,200
+Chopin - Waltz in Am,Romantic,1567,07/01/2019,25/11/2019,322,23,4,Performance,150
+Poulenc - Valse Tyrolienne,Modern,1008,02/09/2019,07/11/2019,66,279,5,Performance,100
+Schumann - Remembrance,Romantic,2043,28/04/2019,07/11/2019,193,139,5,Performance,130
+Bach - Prelude in Cm - 934,Baroque,1497,15/08/2019,29/09/2019,45,254,1,Performance,145
+Bach - Invention 1,Baroque,1600,22/02/2019,29/06/2019,127,67,5,Performance,100
+Mozart - Allegro (3rd movement) K282,Classical,1564,05/11/2020,31/03/2021,146,799,6,Average,200
+Schumann - Träumerei,Romantic,852,09/11/2020,05/12/2020,26,804,7,Average,180
+Kuhlau - Rondo Vivace,Classical,1444,03/08/2020,27/10/2020,85,732,6,Average,130
+Schumann - Lalling Melody,Romantic,278,28/06/2020,14/08/2020,47,698,1,Average,80
+Schumann - Melody,Romantic,244,20/06/2020,22/07/2020,32,689,1,Average,60
+Georg Böhm - Minuet in G,Baroque,391,27/01/2020,18/04/2020,82,497,1,Average,60
+Schumann - Kinderszenen 1,Romantic,592,25/03/2020,18/04/2020,24,572,5,Average,120
+Bach - Prelude in G from Cello Suite No 1,Baroque,1484,04/02/2020,10/04/2020,66,505,5,Average,150
+Bach - Minuet in Gm - 115,Baroque,410,07/01/2020,01/02/2020,25,467,1,Average,80
+Bach - Minuet - G - 114,Baroque,232,06/12/2019,08/01/2020,33,443,1,Average,120
+Haydn - Andante in A,Classical,2342,08/06/2019,07/11/2019,152,186,5,Average,170
+Schumann - Volksliedchen,Romantic,585,01/07/2019,28/07/2019,27,218,2,Average,110
+Scott Joplin + Jingle Bells mashup,Modern,956,08/12/2020,24/12/2020,16,847,6,Average,70
