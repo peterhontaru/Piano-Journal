@@ -72,12 +72,16 @@ max_break <- raw_data%>%
   filter(Genre %notin% c("Other", "Not applicable"))%>%
   arrange(Project)%>%
   group_by(Project)%>%
-  summarise(Max_Break = max(Date_End - lag(Date_End), na.rm = TRUE))
+  summarise(Max_Break = max(Date_End - lag(Date_End), na.rm = TRUE),
+            Max_Break = ifelse(is.infinite(Max_Break), 0, Max_Break))
 
-# check if we have all the information we need
-table_existing_info <- read_csv("table_outline.csv")%>%mutate(Project = as.factor(Project))
+# pulls some features not stored within the app
+table_existing_info <- read_csv("table_outline.csv")%>%
+  mutate(Project = as.factor(Project),
+         Standard = as.factor(Standard),
+         ABRSM = as.factor(ABRSM))
 
-# set out model_data table by project (data by each project)
+# merge the previous data in what will be our table for modelling set out model_data table by project (data by each project)
 model_data <- raw_data%>%
   filter(Genre %notin% c("Other", "Not applicable"))%>%
   filter(Completed == "Yes")%>%
@@ -92,9 +96,9 @@ model_data <- raw_data%>%
          Level = as.factor(ifelse(ABRSM %in% c(1,2,3,4), "Beginner",
                                   ifelse(ABRSM %in% c(5,6), "Intermediate", "Advanced"))),
          Standard = as.factor(Standard),
-         Length = Length/60,
-         Level = fct_relevel(Level, levels = c("Beginner", "Intermediate", "Advanced")),
-         ABRSM = fct_relevel(ABRSM, levels = c("1", "2", "3", "4", "5", "6", "7", "8")))%>%
+         #ABRSM = fct_relevel(ABRSM, levels = c("1", "2", "3", "4", "5", "6", "7", "8")),
+         #Level = fct_relevel(Level, levels = c("Beginner", "Intermediate", "Advanced")),
+         Length = Length/60)%>%
   inner_join(Practice_by_Date, by = "Date_Start")%>%
   inner_join(max_break, by = "Project")%>%
   mutate(Break = as.factor(ifelse(Max_Break > 31, "Yes", "No")))
@@ -110,27 +114,4 @@ write_csv(table_missing_info, "table_missing_info.csv")
 # connect to their API
 # https://support.toggl.com/en/articles/2559637-do-you-have-an-api-available
 
-#---------
-#piece length/difficulty/Standard
 # talk about each step of the EDA
-#---------
-
-# Functions/variables for shiny ----------------------------------------------------------
-
-# to use as KPI on dashboard
-calc_last_updated <- raw_data%>%summarise(Last_Updated = max(Date_End))%>%pull()
-
-# import the model
-model <- readRDS(file = './model.rda')
-
-# variables needed for modeling
-predictions <- predict(model, model_data)
-
-# model_data2 <- model_data %>%
-#   mutate(Predicted = round(predictions,1),
-#          Actual = round(Duration, 1),
-#          Residuals = Actual - Predicted)%>%
-#   select(Predicted, Actual, Residuals, Project, Level, Genre)
-
-mae = mae(model_data[[3]], predictions)
-rmse = rmse(model_data[[3]], predictions)

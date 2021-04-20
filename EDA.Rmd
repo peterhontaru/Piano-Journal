@@ -69,14 +69,14 @@ source("global.R")
 ## Piano practice timeline
 
 ```{r fig.height=6, fig.width=15}
-timeline <- raw_data%>%
+raw_data%>%
   group_by(Month_format)%>%
   summarise(Total_Duration = sum(Duration)/60)%>%
   mutate(Total_Duration2 = as.integer(cumsum(Total_Duration)),
          max = as.integer(max(Total_Duration2)),
-         max = ifelse(max > Total_Duration2, "", max))
+         max = ifelse(max > Total_Duration2, "", max))%>%
 
-  ggplot(timeline, aes(Month_format, Total_Duration2, group = 1))+
+  ggplot(aes(Month_format, Total_Duration2, group = 1))+
   geom_line(size = 2, color = "#69b3a2")+
   geom_point(size = 5, color = "#69b3a2")+
   geom_area(alpha = 0.3, fill = "#69b3a2")+
@@ -107,7 +107,7 @@ timeline <- raw_data%>%
 
 Based on the level at the time and the difficulty of the piece, we can see that each piece took around 10-30 hours of practice.
 
-```{r echo=TRUE, cache = TRUE}
+```{r}
 raw_data%>%
   filter(Date_Start > as.Date("2018/11/01"))%>%
   group_by(Project, Date_Start)%>%
@@ -475,7 +475,6 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
 
 ```{r width = 13}
 model_data%>%
-  inner_join(max_break, by = "Project")%>%
   mutate(Project_formatted = str_replace_all(Project,"[^[:graph:]]", " "),
          Project_label = as.factor(ifelse(Max_Break > 31, Project_formatted, "")))%>%
   
@@ -554,7 +553,7 @@ set.seed(123)
 
 ## Model selection
 
-```{r echo=TRUE, cache = TRUE, results='hide'}
+```{r}
 # set number of clusters 
 clusters <- 4
 
@@ -626,14 +625,7 @@ model_comparison <- resamples(model_list)
 
 summary(model_comparison)
 
-# Estimate accuracy based on different groups? why does the model perform badly there
-# keep LM model for explanation or even RF
-
-# correlation
 # learning curves to indicate overfitting and underfitting
-
-# transform days_practiced into something more like 1-2-3 based on 120 days? why is chopin so high 
-
 # hyper parameters 
 # https://topepo.github.io/caret/model-training-and-tuning.html#model-training-and-parameter-tuning
 # https://topepo.github.io/caret/random-hyperparameter-search.html
@@ -682,7 +674,7 @@ model_data2$Residuals <- model_data2$Actual - model_data2$Predicted
 #visualise predicted vs actual
 ggplotly(
 ggplot(model_data2, aes(Predicted, Actual, label = Residuals, col = Level))+
-  geom_point(aes(text = Project))+
+  geom_point(aes(text = Project), size = 3, alpha = 0.75)+
   geom_smooth(method = "loess", col = "red", lwd = 1, se = FALSE)+
   geom_abline(lty = "dashed", lwd = 0.5, col = "gray")+
   coord_cartesian(xlim = c(0,50), ylim = c(0,50))+
@@ -691,9 +683,7 @@ ggplot(model_data2, aes(Predicted, Actual, label = Residuals, col = Level))+
   theme_ipsum_es() +
   theme(legend.position = "top")
 ) %>%
-  layout(legend = list(
-      orientation = "h",
-      x = 0.4, y = 1.2))
+  layout(legend = list(orientation = "h", x = 0.4, y = 1.2))
 ```
 
 ### Residual distribution
@@ -719,7 +709,7 @@ Lastly, we can see that there is a constant variability of errors. However, ther
 ggplotly(
 ggplot(model_data2, aes(Actual, Residuals, col = Level, label = Predicted))+
   geom_hline(yintercept = 0, size = 3, color = "grey52")+
-  geom_point(aes(text = Project), alpha = 0.5)+
+  geom_point(aes(text = Project), alpha = 0.75, size = 3)+
   geom_smooth(method = "loess", col = "red", se = FALSE)+
   labs(col = NULL)+
   scale_color_tron()+
@@ -741,7 +731,7 @@ These results also confirm that the Random Forest model is significantly better 
 ## How many predictors did the most optimal model have?
 
 ```{r predictors}
-plot(model5, main = "The most optimal model was that with 7 predictors", col = "orange", lwd = 1.5)
+plot(model5, main = "The most optimal model was that with 6 predictors", col = "orange", lwd = 1.5)
 ```
 
 ## What were the most important variables?

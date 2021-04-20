@@ -6,6 +6,21 @@ library(bslib) #theme? not used
 #get the clean data
 source("global.R")
 
+# to use as KPI on dashboard
+calc_last_updated <- raw_data%>%summarise(Last_Updated = max(Date_End))%>%pull()
+
+# import the model
+model <- readRDS(file = './model.rda')
+
+# exclude grade 7 pieces from predictions
+model_data2 <- model_data%>%filter(ABRSM != 7)
+
+# variables needed for modeling
+predictions <- predict(model, model_data2)
+
+mae = mae(model_data2%>%select(Duration)%>%pull(), predictions)
+rmse = rmse(model_data2%>%select(Duration)%>%pull(), predictions)
+
 #about dialog box
 text_about <- tags$div(
     "This report was developed by Peter Hontaru (PetrisorHontaru@gmail.com) and it is currently under testing.", br(),br(),
@@ -53,7 +68,7 @@ ui <- dashboardPage(
                      ),
             menuItem("Repertoire learnt", tabName = "dashboard_repertoire", icon = icon("user-friends"), badgeLabel = "new", badgeColor = "green"),
             menuItem("Predict time to learn", tabName = "dashboard_prediction", icon = icon("search"), badgeLabel = "new", badgeColor = "green"),
-            menuItem("Raw data", tabName = "rawdata", badgeLabel = "out of use", badgeColor = "red"),
+            #menuItem("Raw data", tabName = "rawdata", badgeLabel = "out of use", badgeColor = "red"),
             actionButton("show_about", "About")
         )
     ),
@@ -92,7 +107,7 @@ ui <- dashboardPage(
                         #KPIs
                         valueBoxOutput("kpi_opened_cases", width = 4),
                         valueBoxOutput("kpi_sl", width = 4),
-                        valueBoxOutput("kpi_last_updated", width = 4),
+                        valueBoxOutput("kpi_last_updated", width = 4)
                     ),
                     fluidRow(tabBox(width = 8, title = "Dashboard (hover over the plot for more information)", side = "right", selected = "Service Level",
                                     tabPanel("Service Level", plotOutput("plotly_sl")),
@@ -119,31 +134,26 @@ ui <- dashboardPage(
             ### Repertoire ----------------------------------------------------------
             tabItem("dashboard_repertoire", fluidRow(box(width = 12, status = "info", solidHeader = TRUE, title = "Repertoire", tableOutput("repertoire")))),
             
-            ### Prediction ----------------------------------------------------------
-            # tabItem("dashboard_prediction", 
-            #         fluidRow(box(width = 12, status = "info", solidHeader = TRUE, 
-            #                                              title = "Top 15 Advisors by Case Count", plotlyOutput("plot4")))),
-            # 
-            
             #Prediction tab content
             tabItem('dashboard_prediction',
                     #Filters for categorical variables
-                    box(title = 'Categorical variables', status = 'info', solidHeader = TRUE, width = 12,
+                    box(title = 'About the piece', status = 'info', solidHeader = TRUE, width = 12,
                         splitLayout(tags$head(tags$style(HTML(".shiny-split-layout > div {overflow: visible;}"))),
-                                    cellWidths = c('0%', '30%', '3.3%', '30%', '3.3%', '30%', '3.3%'),
+                                    cellWidths = c('0%', '20%', '2.5%', '35%', '2.5%', '35%', '2.5%', '10%'),
                                     sliderInput('p_abrsm', 'ABRSM Grade', min = 1, max = 8, value = 1),
                                     div(),
+                                    textInput('p_standard', 'How well would you like to learn it', "Performance"),
+                                    div(),
                                     selectInput('p_genre', 'Genre', c('Romantic', 'Baroque', 'Classical', 'Modern')))),
+                    
                     #Filters for numeric variables
-                    box(title = 'Numerical variables', status = 'info', solidHeader = TRUE, width = 12,
-                        splitLayout(cellWidths = c('10%', '2.5%','20%', '2.5%', '22.5%', '5%', '30%', '5%'),
-                                    numericInput('p_length', 'Length (mins)', value = 1),
+                    box(title = 'About yourself', status = 'info', solidHeader = TRUE, width = 12,
+                        splitLayout(cellWidths = c('10%', '2.5%','25%', '7.5%', '35%', '5%', '30%', '5%'),
+                                    numericInput('p_length', 'Length (mins)', value = "Yes"),
                                     div(),
-                                    numericInput('p_cumulative_duration', 'Estimated hours of total practice', 100),
+                                    textInput('p_break2', 'Do you intend to take a break longer than 1 month?', "Yes"),
                                     div(),
-                                    numericInput('p_completeness', 'How well would you like to learn it', 2),
-                                    div(),
-                                    numericInput('p_days_practiced', 'Over how many days do you intend to learn it?', 150))),
+                                    numericInput('p_cumulative_duration', 'Experience (estimate of total hours practiced)', min = 0, max = 1200, 100))),
                     #Box to display the prediction results
                     box(title = 'Prediction result', status = 'danger', solidHeader = TRUE, width = 4, height = 260,
                         div(h5('Estimated hours of practice required:')),
@@ -165,7 +175,7 @@ ui <- dashboardPage(
             tabItem("rawdata", numericInput("maxrows", "Rows to show", 15), verbatimTextOutput("rawtable"),
                     downloadButton("downloadCsv", "Download as CSV"))
         )
-    ),
+    )
 )
 
 # Server ----------------------------------------------------------
@@ -194,30 +204,6 @@ server<- function(input, output, session) {
     })
     
     ### create functions ----------------------------------------------------------
-    # filter for top groups
-    top <- function(filter, top_n){
-        filtered_data()%>%
-            group_by({{filter}})%>%count()%>%arrange(desc(n))%>%head({{top_n}})%>%select({{filter}})
-    }
-    
-    ### plot these groups
-    explore_top_n <- function(filter, n){
-        filtered_data()%>%
-            inner_join(top({{filter}}, {{n}}))%>%
-            group_by(Date_Opened, {{filter}})%>%
-            summarise(count = n())%>%
-            
-            arrange(desc(count))%>%
-            
-            ggplot(aes(Date_Opened, count, fill = {{filter}}, alpha = count))+
-            geom_smooth(se = FALSE, lwd = 0.35, col = "black", lty = 2)+
-            geom_col(col = "black", lwd = 0.1)+
-            theme_few()+
-            labs(x = NULL,
-                 y = NULL)+
-            facet_wrap(vars({{filter}}))+
-            theme(legend.position = "none")
-    }
     
     ### create dynamic variables ----------------------------------------------------------
     calc_opened_cases <- reactive({filtered_data()%>%summarise(Duration = round(sum(Duration)/60))%>%pull()%>%prettyNum(big.mark = ",")})
@@ -296,14 +282,6 @@ server<- function(input, output, session) {
             theme_few()+
             theme(legend.position = "top")
     })
-    
-    ### ASA plot ----------------------------------------------------------
-    # output$plotly_asa <- renderPlotly({
-    #     filtered_data()%>%
-    # 
-    #     
-    #     ggplotly()
-    # })
     
     ## consistency ----------------------------------------------------------
     output$consistency <- renderPlot({
@@ -425,11 +403,6 @@ server<- function(input, output, session) {
     output$repertoire <- renderTable({
         model_data%>%
             select(-Project)%>%
-            # kbl(escape = FALSE,
-            #     caption = "test")%>%
-            # kable_paper(c("hover", "striped"), full_width = F)%>%
-            # #column_spec(c(2,3,5), bold = T, color = "black")%>%
-            # scroll_box(height = "450px")%>%
             as.data.table()
     })
     
@@ -444,14 +417,14 @@ server<- function(input, output, session) {
     
     observeEvent(input$cal, {
         #Copy of the test data without the dependent variable
-        model_pred <- model_data %>% select(-Project, -Date_Start, -Date_End, -Level, -Duration)
+        model_pred <- model_data2 %>% ungroup() %>% select(ABRSM, Genre, Break, Cumulative_Duration, Standard, Length, -Project)
         
         #Dataframe for the single prediction
         values = data.frame(ABRSM = input$p_abrsm,
                         Genre = input$p_genre,
-                        Days_Practiced = input$p_days_practiced,
+                        Break = input$p_break2,
                         Cumulative_Duration = input$p_cumulative_duration,
-                        Completeness = input$p_completeness,
+                        Standard = input$p_standard,
                         Length = input$p_length)
     
         #Included the values into the new data
@@ -485,7 +458,7 @@ shinyApp(ui = ui, server = server)
 
 
 
-
+rsconnect::appDependencies()
 # Other ----------------------------------------------------------
 
 # Download data https://www.youtube.com/watch?v=ux2tQqgY8Gg&list=PLg2IaQ2n7d1UjM8Re4N_zGbPb3avluw_T&index=6
