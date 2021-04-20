@@ -10,8 +10,8 @@
         code_folding: hide
         code_download: true
         
-        fig_width: 9 
-        fig_height: 5
+        fig_width: 15 
+        fig_height: 6
         fig_align: "center"
         
         highlight: pygments
@@ -20,21 +20,18 @@
     title: "Human Learning meets Machine Learning"
     subtitle: "1,200+ hours of piano practice"
     author: "by Peter Hontaru"
-    date: "12/04/2020 (revised)"
 ---
 
 # Introduction
 
-## Why the project?
+## What am I hoping to achieve with this project?
 
-What I am hoping to achieve with the project?
-
-* be able to predict roughly how long it will take to learn a piece based on various features
+* predict how long it will take to learn a piece based on various features
 * discover insights into my practice habits and find areas where I need to improve
-* act as a recommender tool of pieces for other fellow pianists
-* hopefully act as inspiration of a realistic progression of a piano journey for others who want to learn a musical instrument as an adult
+* develop a recommender tool of piano pieces for others to select from based on factors of interest
+* hopefully act as a source of inspiration/realistic piano progress for others who want to learn a musical instrument
 
-**Context**: I started playing the piano in 2018 as a complete beginner. I've now been tracking my practice time for around 2 years and a half and decided to put that to good use and see what interesting things I might be able to find.
+**Context**: I started playing the piano in 2018 as a complete beginner and I've been tracking my practice time for around 2 and a half years. I now decided to put that to good use and see what interesting patterns I might be able to find.
 
 ## Data collection
 
@@ -44,6 +41,14 @@ What I am hoping to achieve with the project?
 * the **Extract, Transform, Load** script is available in the global.R file of this repo
 
 **Disclaimer**: I am not affiliated with Toggl. I started using it a few years ago because it provided all the functionality I needed and loved its minimalistic design. The standard membership, which I use, is free of charge.
+
+Key points:
+
+* identified various trends based on my practice
+* predicted an algorithm
+* practiced less in lockdown
+* impact of something like sight reading on learning a piece faster / technique work (which I now track)
+* testing on current pieces
 
 ```{r}
 knitr::opts_chunk$set(
@@ -80,19 +85,19 @@ raw_data%>%
   geom_line(size = 2, color = "#69b3a2")+
   geom_point(size = 5, color = "#69b3a2")+
   geom_area(alpha = 0.3, fill = "#69b3a2")+
-  #grade 3
+  # grade 3
   geom_point(x="Oct\n '18", y = 253, size = 5, color = "dark red")+
   geom_text(x="Oct\n '18", y = 253+200, size = 5, label = "Grade 3")+
   geom_text(x="Oct\n '18", y = 253+100,  size = 5, label = "253 hours")+
-  #grade 5
+  # grade 5
   geom_point(x="Oct\n '19", y = 675, size = 5, color = "dark red")+
   geom_text(x="Oct\n '19", y = 675+200,  size = 5, label = "Grade 5")+
   geom_text(x="Oct\n '19", y = 675+100,  size = 5, label = "675 hours")+
-  #grade 6
+  # grade 6
   geom_point(x="Oct\n '20", y = 1078, size = 5, color = "dark red")+
   geom_text(x="Oct\n '20", y = 1078+200,  size = 5, label = "Grade 6")+
   geom_text(x="Oct\n '20", y = 1078+100,  size = 5, label = "1078 hours")+
-  #NOW
+  # NOW
   geom_point(aes(x="Apr\n '21", y = 1219), size = 5, color = "dark red")+
   geom_text(aes(label = max), nudge_y = 75, nudge_x = -0.5, size = 5)+
   scale_fill_gradient(low="yellow", high="red")+
@@ -107,9 +112,10 @@ raw_data%>%
 
 Based on the level at the time and the difficulty of the piece, we can see that each piece took around 10-30 hours of practice.
 
-```{r}
+```{r timeline}
 raw_data%>%
   filter(Date_Start > as.Date("2018/11/01"))%>%
+  filter(Completed == "Yes")%>%
   group_by(Project, Date_Start)%>%
   summarise(Duration = sum(Duration)/60)%>%
   mutate(Cumulative_Piece = cumsum(Duration),
@@ -123,7 +129,6 @@ raw_data%>%
 ggplot(aes(Date_Start, Cumulative_Piece, fill = Level)) +
   geom_point(size = 10, shape = 21, col = "black", alpha = 0.5) +
   scale_size(range = c(.1, 16), guide = FALSE) +
-  #geom_text(aes(x = as.Date("2020-05-01"), y = 40, label = Month_Year), size = 15, color = 'lightgrey', family = 'Oswald') +
   labs(title = 'Year: {frame_time}',
        y = "Total practice time per piece (hours)")+
   scale_color_tron()+
@@ -135,8 +140,8 @@ ggplot(aes(Date_Start, Cumulative_Piece, fill = Level)) +
   exit_fade() +
   shadow_mark(alpha = 0.1, size = 5)
 
-#save animation as gif for later use
-anim_save("figs/timeline.gif")
+# save animation as gif for later use
+# anim_save("figs/timeline.gif")
 ```
 
 ## How consistent was my practice?
@@ -171,7 +176,7 @@ raw_data%>%
 
 ## Was there a trend in my amount of daily average practice? {.tabset .tabset-fade .tabset-pills}
 
-We can see that these were correlated with the consistency, where the average session was much shorter in the months I was away from the piano. There's also a trend where my practice close to an exam session was significantly higher than any other time of the year. **Can you spot in which month I had my exam in 2019? What about the end of 2020?**
+We can see that my practice time was correlated with the consistency, where the average session was much shorter in the months I was away from the piano. There's also a trend where my practice close to an exam session was significantly higher than any other time of the year. **Can you spot in which month I had my exam in 2019? What about the end of 2020?**
 
 *average practice length per month includes the days in which I did not practice*
 
@@ -206,7 +211,7 @@ raw_data%>%
 
 Similar trends as before are apparent where my average daily session is longer before the exams than any other time in the year and a dip in the months where I usually take most of my annual leave. I really do need to start picking up the pace and get back to where I used to be.
 
-```{r}
+```{r fig.height=6, fig.width=15}
 raw_data%>%
   group_by(Month_Year, Month_Start, Month_format, Month_Name, Year)%>%
   summarise(Days_Practice = n_distinct(Date_Start),
@@ -233,9 +238,9 @@ raw_data%>%
 
 ### graph {-}
 
-Despite a similar median, we can see that the practice sessions were less likely to be over 80 mins after COVID. We can test if this was a significant impact with a t-test.
+Despite a similar median, we can see that the practice sessions were less likely to be over 80 min after COVID. We can test if this was a significant impact with a t-test.
 
-```{r}
+```{r fig.height=5, fig.width=9}
 covid_start <- as.Date("2020/03/23")
 
 inference <- raw_data%>%
@@ -282,7 +287,7 @@ tidy(leveneTest(inference$Duration~inference$Covid_Status))%>%
 
 ### t-test {-}
 
-My practice sessions After COVID are significantly shorter than those before the pandemic. This might be surprising, given that we were in the UK most of the time. However, I've been spending my time doing a few other things such as improving my technical skillset with R (this analysis wouldn't have been possible otherwise) and learning italian.
+My practice sessions post-COVID are significantly shorter than those before the pandemic. This might be surprising, given that we were in the lockdown most of the time. However, I've been spending my time doing a few other things such as improving my technical skillset with R (this analysis wouldn't have been possible otherwise) and learning italian.
 
 ```{r}
 t_test <- inference%>%
@@ -299,19 +304,17 @@ t_test
 ### by genre {-}
 
 ```{r}
-#write these as a function
-#remove axis
-raw_data%>%
-  group_by(Genre)%>%
-  summarise(Duration = as.integer(sum(Duration)/60))%>%
-  mutate(Genre = reorder(Genre, Duration))%>%
-  arrange(desc(Duration))%>%
+graph_practice <- function(variable, nudge){
+  raw_data%>%
   filter(Genre %notin% c("Other", "Not applicable"))%>%
+  group_by({{variable}})%>%
+  summarise(Duration = as.integer(sum(Duration)/60))%>%
+  arrange(desc(Duration))%>%
   head(10)%>%
-  
-  ggplot(aes(Genre, Duration, fill = Duration))+
+
+  ggplot(aes(reorder({{variable}}, Duration), Duration, fill = Duration))+
   geom_col(show.legend = FALSE, col = "black", width = 1)+
-  geom_text(aes(label = Duration), show.legend = FALSE, nudge_y = 25, size = 5)+
+  geom_text(aes(label = Duration), show.legend = FALSE, nudge_y = nudge, size = 5)+
   scale_fill_gradient(low="yellow", high="red")+
   labs(x = NULL,
        y = "Total hours of practice")+
@@ -319,77 +322,28 @@ raw_data%>%
   theme_ipsum_es()+
   theme(axis.text.x = element_blank(),
         axis.ticks = element_blank())
+}
+
+graph_practice(Genre, 15)
 ```
 
 ### by composer {-}
 
 ```{r}
-raw_data%>%
-  filter(Composer != "Not applicable")%>%
-  group_by(Composer)%>%
-  summarise(Duration = as.integer(sum(Duration)/60))%>%
-  mutate(Composer = reorder(Composer, Duration))%>%
-  arrange(desc(Duration))%>%
-  head(10)%>%
-  
-  ggplot(aes(Composer, Duration, fill = Duration))+
-  geom_col(show.legend = FALSE, col = "black", width = 1)+
-  geom_text(aes(label = Duration), show.legend = FALSE, nudge_y = 6)+
-  scale_fill_gradient(low="yellow", high="red")+
-  labs(x = NULL,
-       y = "Total hours of practice")+
-  coord_flip()+
-  theme_ipsum_es()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks = element_blank())
+graph_practice(Composer, 5)
 ```
 
 ### by piece {-}
 
 ```{r}
-raw_data%>%
-  group_by(Project)%>%
-  summarise(Duration = as.integer(sum(Duration)/60))%>%
-  mutate(Project = reorder(Project, Duration))%>%
-  arrange(desc(Duration))%>%
-  filter(Project %notin% c("Technique", "General", "Sightreading"))%>%
-  head(15)%>%
-  
-  ggplot(aes(Project, Duration, fill = Duration))+
-  geom_col(show.legend = FALSE, col = "black", width = 1)+
-  geom_text(aes(label = Duration), show.legend = FALSE, nudge_y = 2)+
-  scale_fill_gradient(low="yellow", high="red")+
-  labs(x = NULL,
-       y = "Total hours of practice")+
-  coord_flip()+
-  theme_ipsum_es()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks = element_blank())
-```
-
-## Table of repertoire so far
-
-```{r}
-model_data%>%
-  select(-Days_Practiced, -Standard, -Date_End, -Length)%>%
-  mutate(Duration = round(Duration))%>%
-  arrange(desc(Date_Start))%>%
-  rename(`Total Practice Hours` = Cumulative_Duration,
-         Started = Date_Start)%>%
-  
-  kbl(escape = FALSE,
-      caption = "test")%>%
-  kable_paper(c("hover", "striped"), full_width = F)%>%
-  column_spec(c(1,3), bold = T, color = "black")%>%
-  scroll_box(height = "450px")
-#colour code columns by difficulty?
+graph_practice(Project, 3)
 ```
 
 ## Relation between difficulty and number of practice hours {.tabset .tabset-fade .tabset-pills}
 
 ### ABRSM grade {-}
 
-Simplified, ABBRSM grades are a group of 8 graded exams based on their difficulty (1 - beginner to 8 - advanced). There's also diploma grades but those are extremely advanced, equivalent of university level studies and out of the scope of this analysis. 
+Simplified, ABBRSM grades are a group of 8 exams based on their difficulty (1 - beginner to 8 - advanced). There are also diploma grades but those are extremely advanced, equivalent to university level studies and out of the scope of this analysis. 
 
 More information can be found on their official website at https://gb.abrsm.org/en/exam-support/your-guide-to-abrsm-exams/
 
@@ -430,7 +384,7 @@ model_data%>%
   theme(legend.position = "none")
 ```
 
-### What about the piece length?
+## What about the piece length?
 
 ```{r}
 model_data%>%
@@ -447,7 +401,7 @@ model_data%>%
   theme(legend.position = "top")
 ```
 
-## Learning effect - do pieces of the same difficulty become easier to learn with time? {-}
+## Learning effect - do pieces of the same difficulty become easier to learn with time?
 
 We can spot a trend where the time required to learn a piece of a similar difficulty (ABRSM Grade) decreases as my ability to play the piano increases (as judged by cumulative hours of practice). We should keep this in mind and include it as a variable into our prediction model.
 
@@ -457,7 +411,6 @@ model_data%>%
   ggplot(aes(Cumulative_Duration, Duration, group = 1))+
   geom_point(aes(col = Level), size = 3)+
   geom_smooth(method = "lm", se=FALSE)+
-  #facet_wrap(.~ABRSM)+
   labs(x = "Cumulative hours practiced before the first practice of each piece",
        y = "Hours needed to learn a piece",
        subtitle = "Pieces of a similar difficulty become faster to learn")+
@@ -467,11 +420,11 @@ model_data%>%
   theme(legend.position = "top")
 ```
 
-## What impact does coming back to a piece have?
+## Does "pausing" a piece impact the total time required to learn it?
 
 How do we differentiate between pieces that we learn once and those that we come back to repeatedly? Examples could include wanting to improve the playing further, loving it so much we wanted to relearn it, preparing it for a new performance, etc.
 
-As anyone that ever played the piano knows, re-learning a piece, particularly after you "drop" it for a few months/years, results in a much better performance/understanding of the piece. I definitely found that to be true in my experience, particularly with my exam pieces.The downside (as it comes to modelling an algorithm) is that these pieces take longer to learn.
+As anyone that ever played the piano knows, re-learning a piece, particularly after you "drop" it for a few months/years, results in a much better performance/understanding of the piece. I definitely found that to be true in my experience, particularly with my exam pieces.The downside is that these pieces take longer to learn.
 
 ```{r width = 13}
 model_data%>%
@@ -492,9 +445,27 @@ model_data%>%
   theme(legend.position = "top")
 ```
 
+## Repertoire
+
+```{r}
+model_data%>%
+  select(-Days_Practiced, -Date_End, -Max_Break)%>%
+  mutate(Duration = round(Duration),
+         Length = round(Length, 1))%>%
+  arrange(desc(Date_Start))%>%
+  rename(Experience = Cumulative_Duration,
+         Started = Date_Start)%>%
+  relocate(Project, Duration, Genre, ABRSM, Level, Standard, Length, Experience, Break, Started)%>%
+  
+  kbl(escape = FALSE,caption = "Repertoire")%>%
+  kable_paper(c("hover", "striped"), full_width = F)%>%
+  column_spec(c(1,2), bold = T, color = "black")%>%
+  scroll_box(height = "450px")
+```
+
 # Modelling
 
-Question: **How long would it take to practice a piece based on various factors?**
+Question: **How long would it take to learn a piece based on various factors?**
 
 ## detect outliers
 
@@ -512,30 +483,35 @@ There are no missing values in the modelling dataset following the ETL process.
 
 * **categorical**:
   * **ABRSM grade**: 1 to 8
-  * **Genre**: baroque, classical, romantic, modern
+  * **Genre**: Baroque, Classical, Romantic, Modern
   * **Break**: learning it continuously or setting it aside for a while (1 month minimum)
   * **Standard** of practice: public performance or average (relative to someone's level of playing)
 * **numerical**:
   * **Experience**: total hours practiced before the first practice session on each piece
-  * piece **length**: seconds
+  * piece **Length**: minutes
 
 ## Pre-processing
 
 Let's use some basic standardisation offered by the caret package such as **centering** (subtract mean from values) and **scaling** (divide values by standard deviation).
 
-```{r eval=FALSE, include=FALSE}
+```{r}
+set.seed(123)
+
+# set a backup variable
+backup <- model_data
+
 y <- model_data$Duration
 
-#take out price temporarily as we do not want this to be processed
+# take out our response variable temporarily as we do not want this to be processed
 model_data <- model_data %>%
   select(-Duration)
 
-#center and scale our data
-preProcess_range_model <- preProcess(model_data, method=c("center", "scale"))
+# center and scale our data (BoxCox if needed)
+preProcess_range_model <- preProcess(model_data, method=c("center", "scale")) 
 
 model_data <- predict(preProcess_range_model, newdata = model_data)
  
-#Append the Y variable back on with original values
+# append the Y variable back on with original values
 model_data$Duration <- y
 ```
 
@@ -545,15 +521,13 @@ Given the small size of the dataset, bootstrapping resampling method will be app
 
 ```{r}
 train.control <- trainControl(method = "boot",
-                              number = 10,
+                              number = 25,
                               search = "random")
-
-set.seed(123)
 ```
 
 ## Model selection
 
-```{r}
+```{r echo=TRUE, cache = TRUE, results='hide'}
 # set number of clusters 
 clusters <- 4
 
@@ -567,7 +541,6 @@ registerDoSNOW(cl)
 model <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
                   data = model_data,
                   method = "ranger",
-                  preProcess = c("center", "scale", "BoxCox"),
                   tuneLength = 100,
                   trControl = train.control)
 
@@ -575,7 +548,6 @@ model <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break +
 model2 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
                 data = model_data,
                 method = "lmStepAIC",
-                preProcess = c("center", "scale", "BoxCox"),
                 tuneLength = 100,
                 trControl = train.control)
 
@@ -583,35 +555,30 @@ model2 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break 
 model3 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
                 data = model_data,
                 method = "lm",
-                preProcess = c("center", "scale", "BoxCox"),
                 tuneLength = 100,
                 trControl = train.control)
 
 model4 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
                 data = model_data,
                 method = "ridge",
-                preProcess = c("center", "scale", "BoxCox"),
                 tuneLength = 100,
                 trControl = train.control)
 
 model5 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
                 data = model_data,
                 method = "rf",
-                preProcess = c("center", "scale", "BoxCox"),
                 tuneLength = 100,
                 trControl = train.control)
 
 model6 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
                 data = model_data,
                 method = "gbm",
-                preProcess = c("center", "scale", "BoxCox"),
                 tuneLength = 100,
                 trControl = train.control)
 
 model7 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
                 data = model_data,
                 method = "pls",
-                preProcess = c("center", "scale", "BoxCox"),
                 tuneLength = 100,
                 trControl = train.control)
  
@@ -619,11 +586,9 @@ model7 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break 
 stopCluster(cl)
 
 # compare models
-model_list <- list(one = model, two = model2, three = model3, four = model4, five = model5, six = model6, seven = model7)
+model_list <- list(ranger = model, lmStepAIC = model2, lm = model3, ridge = model4, rf = model5, gbm = model6, pls = model7)
 
 model_comparison <- resamples(model_list)
-
-summary(model_comparison)
 
 # learning curves to indicate overfitting and underfitting
 # hyper parameters 
@@ -631,7 +596,17 @@ summary(model_comparison)
 # https://topepo.github.io/caret/random-hyperparameter-search.html
 ```
 
-It does not look like we have any multicollinearity between the full model variables so we can continue as it is.
+We chose the Random Forest model as it was the best performing model. It is known as a model which is:
+
+* not very sensitive to outliers
+* good for non-linearity
+* variable importance can be biased if categorical variables have few levels (toward high levels) or are correlated
+
+```{r}
+summary(model_comparison)
+```
+
+Based on our regression model, it does not look like we have significant multicollinearity between the full model variables so we can continue as it is.
 
 ```{r}
 tidy(vif(model3$finalModel))%>%
@@ -642,16 +617,10 @@ tidy(vif(model3$finalModel))%>%
   kable_paper("hover", full_width = F)
 ```
 
-We chose the Random Forest model as it was the best performing model. It is known as a model which is:
-
-* not very sensitive to outliers
-* good for non-linearity
-* variable importance can be biased if categorical variables have few levels (toward high levels) or are correlated
-
 ### Actuals vs Predictions
 
 ```{r}
-selected_model <- model7
+selected_model <- model5
 
 #Saving the model
 saveRDS(selected_model, file = "model.rda")
@@ -703,7 +672,10 @@ ggplot(model_data2, aes(Residuals, fill = ..count..))+
 
 ### Actuals versus Residuals
 
-Lastly, we can see that there is a constant variability of errors. However, there is still a tendency to underpredict for pieces that took very little and over predict required time for pieces that took longer than necessary.
+Looking at the variability of errors, there is still a tendency to over-predict for pieces that took very little and under-predict for the more difficult ones. There could be two main reasons for this:
+
+* practicing an old piece in order to further improve (which naturally adds more practice time as I re-learn it)
+* learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
 
 ```{r}
 ggplotly(
@@ -718,15 +690,15 @@ ggplot(model_data2, aes(Actual, Residuals, col = Level, label = Predicted))+
   layout(legend = list(orientation = "h",x = 0.4, y = 1.2))
 ```
 
-## Which model performed better?
+## Linear Regression (LR) or Random Forest (RF)?
+
+We can see that the Random Forest performed significantly better than the Linear Regression model. This isn't surprising since there might be non-linear trends within the data, and RFs are known to be more accurate.
 
 ```{r}
-tidy(compare_models(model7, model5))%>%
+tidy(compare_models(model3, model5))%>%
   kbl(caption = "Model 1 vs model 2")%>%
   kable_paper("hover", full_width = F)
 ```
-
-These results also confirm that the Random Forest model is significantly better than the other two.
 
 ## How many predictors did the most optimal model have?
 
@@ -762,8 +734,8 @@ ggplot(imp, aes(Feature, Importance))+
 
 # Limitations
 
-* very **limited data** which did not allow for a train/test split; however, a cross fold validation is known to be a good substitute
-* particular to **one person**'s piano ability (others might learn faster or slower)
+* very **limited data** which did not allow for a train/test split; however, a bootstrap resampling method is known to be a good substitute
+* biased to **one person's** learning ability (others might learn faster or slower)
 * on top of total hours of practice, **quality of practice** is a significant factor which is not captured in this dataset
 * very **difficult to assess when a piece is "finished"** as you can always further improve on your interpretation
 * not all pieces had official **ABRSM ratings** and a few had to be estimated; even for those that do have an official rating, the difficulty of a piece is highly subjective to each pianist and hard to quantify with one number
@@ -772,23 +744,16 @@ ggplot(imp, aes(Feature, Importance))+
 # Hardest things about this analysis:
 
 * the Extract-Transform-Load process - clean the "dirty data" and find creative ways to input the data on the front end of the app to make it reporting friendly on the back-end (with all the variables such as Genre, Type of practice, Composer and Piece name, tag pieces as "work in progress" etc)
-* automate ways to differentiate between pieces that I came back to (repeat variable) vs pieces I only studied once
+* automate ways to differentiate between pieces that I came back to vs pieces I only studied once
 * work with very limited data
 
-Key points:
+# Interactive application:
 
-* identified various trends based on my practice
-* predicted an algorithm
-* practiced less in lockdown
-* impact of something like sight reading on learning a piece faster / technique work (which I now track)
-* testing on current pieces
+* you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/piano-practice-prediction/)
+* https://peterhontaru.shinyapps.io/piano-practice-prediction/
 
-# Application:
+# What's next?
 
-* you can find an interactive display of this presentation, as well as the model in production at the below link
-* -in testing at the moment-
-
-What's next?
-
-* coming back to it once I get more data, especially of harder pieces
+* keep practicing, gather more data and refresh this analysis + update the model
 * add a recommender tab to the shiny dashboard where people could be recommended a piece based on specific features
+* connect to the Toggl API for live updates

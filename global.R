@@ -3,7 +3,7 @@ library(data.table)
 library(lubridate)
 library(plotly)
 library(ggthemes)
-library(hrbrthemes) #theme_ipsum()
+library(hrbrthemes)
 library(ggrepel)
 library(ggsci)
 library(gganimate)
@@ -19,6 +19,7 @@ library(shiny)
 library(shinyBS) # pop-over KPIs
 library(shinydashboard)
 library(shinyWidgets)
+library(randomForest)
 
 # import all files that start with 20 and have 4 characters (unsure if I will be practicing from year 2100 onward)
 raw_data <- list.files(pattern = "^20..", recursive = TRUE)%>%
@@ -81,7 +82,7 @@ table_existing_info <- read_csv("table_outline.csv")%>%
          Standard = as.factor(Standard),
          ABRSM = as.factor(ABRSM))
 
-# merge the previous data in what will be our table for modelling set out model_data table by project (data by each project)
+# merge the previous tables with the modelling data (information for each project)
 model_data <- raw_data%>%
   filter(Genre %notin% c("Other", "Not applicable"))%>%
   filter(Completed == "Yes")%>%
@@ -91,13 +92,13 @@ model_data <- raw_data%>%
             Date_Start = min(Date_Start),
             Date_End = max(Date_End),
             Days_Practiced = Date_End - Date_Start)%>%
-  inner_join(table_existing_info, by = "Project")%>%
+  left_join(table_existing_info, by = "Project")%>%
   mutate(ABRSM = as.factor(ABRSM),
          Level = as.factor(ifelse(ABRSM %in% c(1,2,3,4), "Beginner",
                                   ifelse(ABRSM %in% c(5,6), "Intermediate", "Advanced"))),
          Standard = as.factor(Standard),
-         #ABRSM = fct_relevel(ABRSM, levels = c("1", "2", "3", "4", "5", "6", "7", "8")),
-         #Level = fct_relevel(Level, levels = c("Beginner", "Intermediate", "Advanced")),
+         ABRSM = fct_relevel(ABRSM, levels = c("1", "2", "3", "4", "5", "6", "7", "8")),
+         Level = fct_relevel(Level, levels = c("Beginner", "Intermediate", "Advanced")),
          Length = Length/60)%>%
   inner_join(Practice_by_Date, by = "Date_Start")%>%
   inner_join(max_break, by = "Project")%>%
@@ -113,5 +114,3 @@ write_csv(table_missing_info, "table_missing_info.csv")
 
 # connect to their API
 # https://support.toggl.com/en/articles/2559637-do-you-have-an-api-available
-
-# talk about each step of the EDA

@@ -458,7 +458,6 @@ shinyApp(ui = ui, server = server)
 
 
 
-rsconnect::appDependencies()
 # Other ----------------------------------------------------------
 
 # Download data https://www.youtube.com/watch?v=ux2tQqgY8Gg&list=PLg2IaQ2n7d1UjM8Re4N_zGbPb3avluw_T&index=6
