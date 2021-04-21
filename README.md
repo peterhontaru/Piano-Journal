@@ -2,7 +2,11 @@ Human Learning meets Machine Learning - 1,200+ hours of piano practice
 ================
 by Peter Hontaru
 
-![I have a soft spot for grand pianos](www/piano.jpg)
+<div align="center">
+
+<img src="www/piano.jpg" alt="I have a soft spot for grand pianos" width="550"/>
+
+</div>
 
 # Problem statement
 
@@ -36,8 +40,8 @@ but cannot help but love Elton John’s music):
 
 <div align="center">
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/eTJiT6TXIcw" frameborder="0" data-external="1" allowfullscreen>
-</iframe>
+[![Everything Is
+AWESOME](www/Elton.png)](https://www.youtube.com/embed/eTJiT6TXIcw "Elton John - Your Song")
 
 </div>
 
@@ -53,7 +57,7 @@ but cannot help but love Elton John’s music):
 
 ![difficulty](figs/unnamed-chunk-15-1.png)
 
--   the **Random Forrest** model was shown to be the most optimal model
+-   the **Random Forest** model was shown to be the most optimal model
 
     -   **Rsquared** (0.59)
     -   **MAE** - 5.9 hours

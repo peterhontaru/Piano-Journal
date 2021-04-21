@@ -58,7 +58,7 @@ An example of my video (around 2 years into playing here):
 
 * identified various trends in average daily practice session, time of year, etc
 * pieces could take me anywhere from around 4 hours to 40+ hours, subject to difficulty (as assessed by the ABRSM grade)
-* the Random Forrest model was shown to be the most optimal model
+* the Random Forest model was shown to be the most optimal model
   - **Rsquared** (0.585)
   - **MAE** - 5.9 hours 
   - **RMSE** - 7.5 hours
