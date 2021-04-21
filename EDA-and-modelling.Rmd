@@ -1,17 +1,17 @@
 ---
     output:
       html_document:
- 
+              
         toc: true
         toc_float: false
-        toc_depth: 2
+        toc_depth: 3
         number_sections: true
         
         code_folding: hide
         code_download: true
         
-        fig_width: 15 
-        fig_height: 6
+        fig_width: 9 
+        fig_height: 5
         fig_align: "center"
         
         highlight: pygments
@@ -40,6 +40,7 @@
 * imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18)
 * everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
 * these times include my practice sessions (usually in short bouts of 30 minutes); piano lessons are excluded (usually 2-3 hours total per month)
+* individual pieces were tracked from '19 onwards (initially it was just a generic "piano")
 * the **Extract, Transform, Load** script is available in the global.R file of this repo
 
 **Disclaimer**: I am not affiliated with Toggl. I started using it a few years ago because it provided all the functionality I needed and loved its minimalistic design. The standard membership, which I use, is free of charge.
@@ -61,11 +62,11 @@
 
 ```{r}
 knitr::opts_chunk$set(
-    echo = FALSE, # show all of the code
+    echo = TRUE, # show all code
     tidy = FALSE, # cleaner code printing
     size = "small", # smaller code
     
-    fig.path = "figs/",# where the figures will end up
+    fig.path = "figures/", #graphics location
     out.width = "100%",
 
     message = FALSE,
@@ -651,13 +652,13 @@ model_data2$Residuals <- model_data2$Actual - model_data2$Predicted
 
 #visualise predicted vs actual
 ggplotly(
-ggplot(model_data2, aes(Predicted, Actual, label = Residuals, col = Level))+
-  geom_point(aes(text = Project), size = 3, alpha = 0.75)+
-  geom_smooth(method = "loess", col = "red", lwd = 1, se = FALSE)+
+ggplot(model_data2, aes(Predicted, Actual, label = Residuals))+
+  geom_point(aes(text = Project, fill = Level), size = 3, shape = 21, col = "black", alpha = 0.75)+
+  geom_smooth(method = "loess", col = "red", lwd = 1, se = FALSE, group = 1)+
   geom_abline(lty = "dashed", lwd = 0.5, col = "gray")+
   coord_cartesian(xlim = c(0,50), ylim = c(0,50))+
   labs(col = NULL)+
-  scale_color_tron()+
+  scale_fill_tron()+
   theme_ipsum_es() +
   theme(legend.position = "top")
 ) %>%

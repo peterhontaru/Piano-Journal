@@ -1,8 +1,7 @@
-Project,ABRSM,Standard,Length
+﻿Project,ABRSM,Standard,Length
 Bach - Invention 1 in C,5,Performance,100
 Bach - Invention 4 in Dm,5,Performance,100
-Bach - Minuet in G - 114,1,Average,120
-Bach - Minuet in G - 116, 1, Average, 120
+Bach - Minuet - G - 114,1,Average,120
 Bach - Minuet in Gm - 115,1,Average,80
 Bach - Prelude in Cm - 934,5,Performance,145
 Bach - Prelude in G from Cello Suite No 1,5,Average,150
@@ -27,7 +26,3 @@ Schumann - Melody,1,Average,60
 Schumann - Remembrance,5,Performance,130
 Schumann - Träumerei,7,Average,180
 Schumann - Volksliedchen,2,Average,110
-Scott Joplin + Jingle Bells mashup,6,Average,70
-
-
-
