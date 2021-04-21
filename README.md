@@ -117,9 +117,9 @@ more difficult ones. There could be two main reasons for this:
 Full project available:
 
 -   at the following
-    [link](https://htmlpreview.github.io/?https://github.com/peterhontaru/piano-practice-prediction/blob/master/EDA%20and%20modelling),
+    [link](https://htmlpreview.github.io/?https://github.com/peterhontaru/Piano-Practice-Prediction/blob/master/EDA-and-modelling.html),
     in HTML format
--   in the **EDA and modelling.md** file of this repo (however, I
+-   in the **EDA-and-modelling.md** file of this repo (however, I
     recommend previewing it at the link above since it was originally
     designed as a html document)
 
