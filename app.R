@@ -460,11 +460,15 @@ shinyApp(ui = ui, server = server)
 
 # Other ----------------------------------------------------------
 
+# DT package for tables and renderTable
+
 # Download data https://www.youtube.com/watch?v=ux2tQqgY8Gg&list=PLg2IaQ2n7d1UjM8Re4N_zGbPb3avluw_T&index=6
 
 # About me page with picture and video, context, description (picture Chirstmas piano), 
 
 # video somewhere on timeline?
+
+# recommender - swipe action? https://livefreeordichotomize.com/2017/03/12/introducing-shinyswipr-swipe-your-way-to-a-great-shiny-ui/
 
 # last few sessions on the dashboard (one tab as previous 7/14 days)
 

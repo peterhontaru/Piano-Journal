@@ -35,6 +35,13 @@
 
 **Context**: I started playing the piano in 2018 as a complete beginner and I've been tracking my practice time for around 2 and a half years. I now decided to put that to good use and see what interesting patterns I might be able to find.
 
+An example of my video (around 2 years into playing here):
+
+<div align="center">
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/eTJiT6TXIcw" frameborder="0" data-external="1" allowfullscreen>
+   </iframe>
+</div>
+
 ## Data collection
 
 * imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18)
@@ -62,7 +69,7 @@
 
 ```{r}
 knitr::opts_chunk$set(
-    echo = TRUE, # show all code
+    echo = FALSE, # show all code
     tidy = FALSE, # cleaner code printing
     size = "small", # smaller code
     
@@ -465,11 +472,13 @@ model_data%>%
   arrange(desc(Date_Start))%>%
   rename(Experience = Cumulative_Duration,
          Started = Date_Start)%>%
-  relocate(Project, Duration, Genre, ABRSM, Level, Standard, Length, Experience, Break, Started)%>%
+  relocate(Project, Duration, Genre, Length, Standard, Experience, Break, ABRSM, Level, Started)%>%
   
-  kbl(escape = FALSE,caption = "Repertoire")%>%
+  kbl(escape = FALSE,caption = "Repertoire (red - response variable; green - predictor variables)")%>%
   kable_paper(c("hover", "striped"), full_width = F)%>%
-  column_spec(c(1,2), bold = T, color = "black")%>%
+  column_spec(c(1), bold = T, color = "black")%>%
+  column_spec(c(2), bold = T, color = "red")%>%
+  column_spec(c(3:8), bold = T, color = "green")%>%
   scroll_box(height = "450px")
 ```
 
@@ -477,7 +486,7 @@ model_data%>%
 
 Question: **How long would it take to learn a piece based on various factors?**
 
-## detect outliers
+## outliers
 
 Given the very limited data at the advanced level (Grade 7 ABRSM), those two pieces will be removed. One is an extreme outlier as well which will significantly impact our models.
 
@@ -489,7 +498,7 @@ model_data <- model_data%>%filter(ABRSM != 7)%>%droplevels()
 
 There are no missing values in the modelling dataset following the ETL process.
 
-## Feature engineering
+## feature engineering
 
 * **categorical**:
   * **ABRSM grade**: 1 to 8
@@ -500,7 +509,7 @@ There are no missing values in the modelling dataset following the ETL process.
   * **Experience**: total hours practiced before the first practice session on each piece
   * piece **Length**: minutes
 
-## Pre-processing
+## pre-processing
 
 Let's use some basic standardisation offered by the caret package such as **centering** (subtract mean from values) and **scaling** (divide values by standard deviation).
 
@@ -525,7 +534,7 @@ model_data <- predict(preProcess_range_model, newdata = model_data)
 model_data$Duration <- y
 ```
 
-## Resampling
+## resampling
 
 Given the small size of the dataset, bootstrapping resampling method will be applied.
 
@@ -535,7 +544,7 @@ train.control <- trainControl(method = "boot",
                               search = "random")
 ```
 
-## Model selection
+## model selection
 
 ```{r echo=TRUE, cache = TRUE, results='hide'}
 # set number of clusters 
@@ -616,6 +625,8 @@ We chose the Random Forest model as it was the best performing model. It is know
 summary(model_comparison)
 ```
 
+## model evaluation
+
 Based on our regression model, it does not look like we have significant multicollinearity between the full model variables so we can continue as it is.
 
 ```{r}
@@ -627,7 +638,7 @@ tidy(vif(model3$finalModel))%>%
   kable_paper("hover", full_width = F)
 ```
 
-### Actuals vs Predictions
+### actuals vs predictions
 
 ```{r}
 selected_model <- model5
@@ -651,8 +662,8 @@ model_data2$Residuals <- model_data2$Actual - model_data2$Predicted
 #   select(Predicted, Actual, Residuals, Project, Level, Genre)
 
 #visualise predicted vs actual
-ggplotly(
-ggplot(model_data2, aes(Predicted, Actual, label = Residuals))+
+
+p <- ggplot(model_data2, aes(Predicted, Actual, label = Residuals))+
   geom_point(aes(text = Project, fill = Level), size = 3, shape = 21, col = "black", alpha = 0.75)+
   geom_smooth(method = "loess", col = "red", lwd = 1, se = FALSE, group = 1)+
   geom_abline(lty = "dashed", lwd = 0.5, col = "gray")+
@@ -661,11 +672,15 @@ ggplot(model_data2, aes(Predicted, Actual, label = Residuals))+
   scale_fill_tron()+
   theme_ipsum_es() +
   theme(legend.position = "top")
-) %>%
-  layout(legend = list(orientation = "h", x = 0.4, y = 1.2))
+
+p
+
+#ggplotly(p+labs(fill = "")) %>% layout(legend = list(orientation = "h", x = 0.4, y = 1.2))
 ```
 
-### Residual distribution
+### residual distribution {.tabset .tabset-fade .tabset-pills}
+
+#### histogram {-}
 
 We can see that the residuals are mostly situated around 0.
 
@@ -680,7 +695,42 @@ ggplot(model_data2, aes(Residuals, fill = ..count..))+
   theme(legend.position = "none")
 ```
 
-### Actuals versus Residuals
+#### QQ plot / normal probability plot of residuals {-}
+
+Similar to the previous histogram, we can spot some deviations from the normal distribution.
+
+```{r}
+ggplot(model_data2, aes(sample=Residuals))+
+  stat_qq(fill = "#DC0000B2", size = 3, shape = 21, col = "black", alpha = 0.75)+
+  stat_qq_line(col = "black")+
+  theme_ipsum_es()+
+  scale_color_tron()+
+  scale_fill_tron()+
+  labs(x = "Theoretical quantiles", 
+       y = "Standardised residuals")+
+  theme(legend.position = "top")
+```
+
+### independence of residuals (and hence observations)
+
+There seems to be a slight trend where newer pieces have a smaller residuals. This could mean a lack of independence from the order of data collection (the model predictions are based on my current level).
+
+```{r}
+model_data2%>%
+  arrange(Date_Start)%>%
+
+ ggplot(aes(x = 1:nrow(.), y = Residuals)) + 
+  labs(x = "Index", 
+       y = "Residuals")+
+  geom_hline(yintercept = 0, alpha = 0.5, size = 3, color = "grey52", lty = 1)+
+  geom_point(fill = "#DC0000B2", size = 3, shape = 21, col = "black")+
+  geom_smooth(method = "lm", lwd = 0.5, col = "black", se = FALSE, alpha = 0.75)+
+  theme_ipsum_es()+
+  scale_color_tron()+
+  scale_fill_tron()
+```
+
+### actuals versus residuals
 
 Looking at the variability of errors, there is still a tendency to over-predict for pieces that took very little and under-predict for the more difficult ones. There could be two main reasons for this:
 
@@ -688,16 +738,18 @@ Looking at the variability of errors, there is still a tendency to over-predict 
 * learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
 
 ```{r}
-ggplotly(
-ggplot(model_data2, aes(Actual, Residuals, col = Level, label = Predicted))+
+p <- ggplot(model_data2, aes(Actual, Residuals, label = Predicted))+
   geom_hline(yintercept = 0, size = 3, color = "grey52")+
-  geom_point(aes(text = Project), alpha = 0.75, size = 3)+
-  geom_smooth(method = "loess", col = "red", se = FALSE)+
+  geom_point(aes(text = Project, fill = Level), size = 3, shape = 21, col = "black", alpha = 0.75)+
+  geom_smooth(method = "loess", col = "red", se = FALSE, alpha = 0.5)+
   labs(col = NULL)+
-  scale_color_tron()+
-  theme_ipsum_es()
-) %>%
-  layout(legend = list(orientation = "h",x = 0.4, y = 1.2))
+  scale_fill_tron()+
+  theme_ipsum_es() +
+  theme(legend.position = "top")
+
+p
+
+#ggplotly(p + labs(fill = "")) %>% layout(legend = list(orientation = "h",x = 0.4, y = 1.2))
 ```
 
 ## Linear Regression (LR) or Random Forest (RF)?
@@ -767,3 +819,4 @@ ggplot(imp, aes(Feature, Importance))+
 * keep practicing, gather more data and refresh this analysis + update the model
 * add a recommender tab to the shiny dashboard where people could be recommended a piece based on specific features
 * connect to the Toggl API for live updates
+* I started tracking sight-reading/technique so maybe will look into reporting on that too once I gather some data
