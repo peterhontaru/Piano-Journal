@@ -67,7 +67,7 @@ An example of my video (around 2 years into playing here):
     * learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
 * the most important variables were shown to be the number of **length of the piece**, **standard of playing** (performance vs casual) and **experience**(cumulative hours before first practice session on each piece)
 
-```{r}
+```{r echo=FALSE}
 knitr::opts_chunk$set(
     echo = FALSE, # show all code
     tidy = FALSE, # cleaner code printing
@@ -546,7 +546,7 @@ train.control <- trainControl(method = "boot",
 
 ## model selection
 
-```{r echo=TRUE, cache = TRUE, results='hide'}
+```{r cache=TRUE, results='hide'}
 # set number of clusters 
 clusters <- 4
 
@@ -765,7 +765,14 @@ tidy(compare_models(model3, model5))%>%
 ## How many predictors did the most optimal model have?
 
 ```{r predictors}
-plot(model5, main = "The most optimal model was that with 6 predictors", col = "orange", lwd = 1.5)
+ggplot(model5)+
+  geom_line(lwd = 1.25, colour = "orange")+
+  geom_point(size = 3, colour = "orange")+
+  geom_point(aes(x = 6, y = 6.755926), size = 8, shape = 21, fill = "orange", col = "black")+
+  labs(subtitle = "The most optimal model was that with 6 predictors")+
+  scale_color_tron()+
+  scale_fill_tron()+
+  theme_ipsum_es()
 ```
 
 ## What were the most important variables?
@@ -787,7 +794,7 @@ ggplot(imp, aes(Feature, Importance))+
   scale_fill_tron()+
   theme_ipsum_es()+
   coord_flip()+
-  labs(title = "Variable importance ranking")+
+  labs(subtitle = "Variable importance ranking")+
   theme(axis.text.x =  element_blank(), 
         axis.ticks = element_blank())
 

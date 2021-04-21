@@ -68,19 +68,6 @@ An example of my video (around 2 years into playing here):
 * the most important variables were shown to be the number of **length of the piece**, **standard of playing** (performance vs casual) and **experience**(cumulative hours before first practice session on each piece)
 
 
-```r
-knitr::opts_chunk$set(
-    echo = FALSE, # show all code
-    tidy = FALSE, # cleaner code printing
-    size = "small", # smaller code
-    
-    fig.path = "figures/", #graphics location
-    out.width = "100%",
-
-    message = FALSE,
-    warning = FALSE
-    )
-```
 
 
 
@@ -662,74 +649,6 @@ Given the small size of the dataset, bootstrapping resampling method will be app
 ## model selection
 
 
-```r
-# set number of clusters 
-clusters <- 4
-
-# run them all in parallel
-cl <- makeCluster(clusters, type = "SOCK")
- 
-# register cluster train in paralel
-registerDoSNOW(cl)
-
-# train models
-model <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
-                  data = model_data,
-                  method = "ranger",
-                  tuneLength = 100,
-                  trControl = train.control)
-
-
-model2 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
-                data = model_data,
-                method = "lmStepAIC",
-                tuneLength = 100,
-                trControl = train.control)
-
-
-model3 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
-                data = model_data,
-                method = "lm",
-                tuneLength = 100,
-                trControl = train.control)
-
-model4 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
-                data = model_data,
-                method = "ridge",
-                tuneLength = 100,
-                trControl = train.control)
-
-model5 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
-                data = model_data,
-                method = "rf",
-                tuneLength = 100,
-                trControl = train.control)
-
-model6 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
-                data = model_data,
-                method = "gbm",
-                tuneLength = 100,
-                trControl = train.control)
-
-model7 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
-                data = model_data,
-                method = "pls",
-                tuneLength = 100,
-                trControl = train.control)
- 
-# shut the instances of R down
-stopCluster(cl)
-
-# compare models
-model_list <- list(ranger = model, lmStepAIC = model2, lm = model3, ridge = model4, rf = model5, gbm = model6, pls = model7)
-
-model_comparison <- resamples(model_list)
-
-# learning curves to indicate overfitting and underfitting
-# hyper parameters 
-# https://topepo.github.io/caret/model-training-and-tuning.html#model-training-and-parameter-tuning
-# https://topepo.github.io/caret/random-hyperparameter-search.html
-```
 
 We chose the Random Forest model as it was the best performing model. It is known as a model which is:
 
