@@ -88,8 +88,8 @@ Looking at the variability of errors, there is still a tendency to over-predict 
 
 Full project available:
 
-* at the following [link](http://htmlpreview.github.io/?https://github.com/peterhontaru/Price-Prediction-Airbnb-Milan-Apartments/blob/master/AirBnb-Milan.html), in HTML format
-* in the **AirBnb-Milan.md** file of this repo (however, I recommend previewing it at the link above since it was originally designed as a html document)
+* at the following [link](https://htmlpreview.github.io/?https://github.com/peterhontaru/piano-practice-prediction/blob/master/EDA and modelling), in HTML format
+* in the **EDA and modelling.md** file of this repo (however, I recommend previewing it at the link above since it was originally designed as a html document)
 
 # Interactive application:
 
