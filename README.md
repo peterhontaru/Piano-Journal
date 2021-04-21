@@ -46,8 +46,7 @@ but cannot help but love Elton John’s music):
 
 <div align="center">
 
-[![Everything Is
-AWESOME](www/Elton.png)](https://www.youtube.com/embed/eTJiT6TXIcw "Elton John - Your Song")
+[<img src="www/Elton.png" width="550" alt="Elton John - Your Song" />](https://www.youtube.com/embed/eTJiT6TXIcw "Elton John - Your Song")
 
 </div>
 

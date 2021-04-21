@@ -37,7 +37,7 @@ Here's an example of a recent performance (I mainly play classical music but can
 </div>
 
 <div align="center">
-   [![Everything Is AWESOME](www/Elton.png)](https://www.youtube.com/embed/eTJiT6TXIcw "Elton John - Your Song")
+   [![Elton John - Your Song](www/Elton.png){width="550"}](https://www.youtube.com/embed/eTJiT6TXIcw "Elton John - Your Song")
 </div>
 
 # Key insights:
