@@ -33,6 +33,10 @@ I started playing the piano in 2018 as a complete beginner and I've been trackin
 Here's an example of a recent performance (I mainly play classical music but cannot help but love Elton John's music):
 
 <div align="center">
+**click to view**
+</div>
+
+<div align="center">
    [![Everything Is AWESOME](www/Elton.png)](https://www.youtube.com/embed/eTJiT6TXIcw "Elton John - Your Song")
 </div>
 
@@ -42,7 +46,7 @@ Here's an example of a recent performance (I mainly play classical music but can
 
 ![trends](figs/unnamed-chunk-5-1.png)
 
--   pieces could take me anywhere from \~4 hours to 40+ hours of practice, subject to difficulty (as assessed by the ABRSM grade)
+-   pieces could take me anywhere from ~4 hours to 40+ hours of practice, subject to difficulty (as assessed by the ABRSM grade)
 
 ![difficulty](figs/unnamed-chunk-15-1.png)
 

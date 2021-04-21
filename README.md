@@ -40,6 +40,12 @@ but cannot help but love Elton John’s music):
 
 <div align="center">
 
+**click to view**
+
+</div>
+
+<div align="center">
+
 [![Everything Is
 AWESOME](www/Elton.png)](https://www.youtube.com/embed/eTJiT6TXIcw "Elton John - Your Song")
 
