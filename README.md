@@ -19,6 +19,13 @@ concert pianist after only 30 minutes of practice. Fortunately, unlike
 what you might hear on Wall Street, previous performance **is**
 indicative of future success.
 
+There’s also a secondary goal here to hopefully provide a source of
+inspiration for other people that have always thought to themselves
+“**one day I’ll learn a musical instrument**”. Any other skill qualifies
+here, though. I aim to be doing this by, at the very least, allowing for
+visibility into my own journey. If this is what you want, why not give
+it a try?
+
 ### the what
 
 **Can we predict how long it would take to learn a piano piece based on
@@ -35,8 +42,8 @@ able to use in their journeys.
 
 ![Timeline](figs/unnamed-chunk-3-1.png)
 
-Here’s an example of a recent performance (I mainly play classical music
-but cannot help but love Elton John’s music):
+Here’s an example of a recent performance - I mainly play classical
+music but cannot help but love Elton John’s music.
 
 <div align="center">
 
@@ -63,25 +70,26 @@ but cannot help but love Elton John’s music):
 ![difficulty](figs/unnamed-chunk-15-1.png)
 
 -   the **Random Forest** model was shown to be the most optimal model
+    *(bootstrap resampling, 25x)*
 
-    -   **Rsquared** (0.59)
+    -   **Rsquared** - 0.59
     -   **MAE** - 5.9 hours
     -   **RMSE** - 7.5 hours
 
-Looking at the variability of errors, there is still a tendency to
-over-predict for pieces that took very little time to learn and
-under-predict for the more difficult ones. There could be two main
-reasons for this:
+-   looking at the variability of errors, there is still a tendency to
+    over-predict for pieces that took very little time to learn and
+    under-predict for the more difficult ones. There could be two main
+    reasons for this:
 
--   artificially inflating the number of hours spent on a piece by
-    returning to it a second time (due to a recital performance, wanting
-    to improve the interpretation further or simply just liking it
-    enough to play it again)
--   learning easier pieces later on in my journey which means I will
-    learn them faster than expected (based on my earlier data where a
-    piece of a similar difficulty took longer)
+    -   artificially inflating the number of hours spent on a piece by
+        returning to it a second time (due to a recital performance,
+        wanting to improve the interpretation further or simply just
+        liking it enough to play it again)
+    -   learning easier pieces later on in my journey which means I will
+        learn them faster than expected (based on my earlier data where
+        a piece of a similar difficulty took longer)
 
-![Residuals](www/residuals.png)
+![Residuals](figs/unnamed-chunk-30-1.png)
 
 -   the most important variables were shown to be the **length of the
     piece**, **standard of playing**(performance vs casual) and

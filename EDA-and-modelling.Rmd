@@ -26,29 +26,35 @@
 
 # Introduction
 
-## What am I hoping to achieve with this project?
+## Problem statement {-}
 
-* predict how long it will take to learn a piece based on various features
-* discover insights into my practice habits and find areas where I need to improve
-* develop a recommender tool of piano pieces for others to select from based on factors of interest
-* hopefully act as a source of inspiration/realistic piano progress for others who want to learn a musical instrument
+### the why {-}
 
-**Context**: I started playing the piano in 2018 as a complete beginner and I've been tracking my practice time for around 2 and a half years. I now decided to put that to good use and see what interesting patterns I might be able to find.
+Learning a piano piece is a time-intensive process. Like with most other things, we tend to overestimate our own ability and then become frustrated that we cannot learn and play that Chopin piece like a concert pianist after only 30 minutes of practice. Fortunately, unlike what you might hear on Wall Street, previous performance **is** indicative of future success.
 
-An example of my video (around 2 years into playing here):
+There's also a secondary goal here to hopefully provide a source of inspiration for other people that have always thought to themselves "**one day I'll learn a musical instrument**". Any other skill qualifies here, though. I aim to be doing this by, at the very least, allowing for visibility into my own journey. If this is what you want, why not give it a try?
+
+### the what {-}
+
+**Can we predict how long it would take to learn a piano piece based on a number of factors? If so, which factors influenced the total amount of hours required to learn the piece the most?**
+
+### context {-}
+
+I started playing the piano in 2018 as a complete beginner and I've been tracking my practice time for around 2 and a half years. I've now decided to put that data to good use and see what interesting patterns I might be able to find and hopefully develop a tool that others might be able to use in their journeys.
+
+Here's an example of a recent performance - I mainly play classical music but cannot help but love Elton John's music.
 
 <div align="center">
    <iframe width="560" height="315" src="https://www.youtube.com/embed/eTJiT6TXIcw" frameborder="0" data-external="1" allowfullscreen>
    </iframe>
 </div>
 
-## Data collection
+## Data collection {-}
 
-* imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18)
-* everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
-* these times include my practice sessions (usually in short bouts of 30 minutes); piano lessons are excluded (usually 2-3 hours total per month)
-* individual pieces were tracked from '19 onwards (initially it was just a generic "piano")
-* the **Extract, Transform, Load** script is available in the global.R file of this repo
+-   imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18) and on Excel spreadsheet for Nov '18
+-   everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
+-   time spent in piano lessons was not tracked/included (usually 2-3 hours total per month)
+-   the **Extract, Transform, Load** script is available in the **global.R** file of this repo
 
 **Disclaimer**: I am not affiliated with Toggl. I started using it a few years ago because it provided all the functionality I needed and loved its minimalistic design. The standard membership, which I use, is free of charge.
 
@@ -56,16 +62,16 @@ An example of my video (around 2 years into playing here):
 
 ## Summary:
 
-* identified various trends in average daily practice session, time of year, etc
-* pieces could take me anywhere from around 4 hours to 40+ hours, subject to difficulty (as assessed by the ABRSM grade)
-* the Random Forest model was shown to be the most optimal model
-  - **Rsquared** (0.585)
-  - **MAE** - 5.9 hours 
-  - **RMSE** - 7.5 hours
-  * Looking at the variability of errors, there is still a tendency to over-predict for pieces that took very little and under-predict for the more difficult ones. There could be two main reasons for this:
-    * practicing an old piece in order to further improve (which naturally adds more practice time as I re-learn it)
-    * learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
-* the most important variables were shown to be the number of **length of the piece**, **standard of playing** (performance vs casual) and **experience**(cumulative hours before first practice session on each piece)
+* identified various trends in my practice habits
+* pieces could take me anywhere from ~4 hours to 40+ hours of practice, subject to difficulty (as assessed by the ABRSM grade)
+* the **Random Forest** model was shown to be the most optimal model *(bootstrap resampling, 25x)*
+    -   **Rsquared** - 0.59
+    -   **MAE** - 5.9 hours
+    -   **RMSE** - 7.5 hours
+* looking at the variability of errors, there is a tendency to over-predict for pieces that took very little time to learn and under-predict for the more difficult ones. There could be two main reasons for this:
+  -   artificially inflating the number of hours spent on a piece by returning to it a second time (due to a recital performance, wanting to improve the interpretation further or simply just liking it enough to play it again)
+  -   learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
+-   the most important variables were shown to be the **length of the piece**, **standard of playing**(performance vs casual) and **experience**(lifetime total practice before first practice session on each piece)
 
 ```{r echo=FALSE}
 knitr::opts_chunk$set(
@@ -73,7 +79,7 @@ knitr::opts_chunk$set(
     tidy = FALSE, # cleaner code printing
     size = "small", # smaller code
     
-    fig.path = "figures/", #graphics location
+    fig.path = "figs/", #graphics location
     out.width = "100%",
 
     message = FALSE,
@@ -163,7 +169,7 @@ ggplot(aes(Date_Start, Cumulative_Piece, fill = Level)) +
 
 ## How consistent was my practice?
 
-Generally, I've done pretty well to maintain a high level of consistency with the exception of August/December. This is usually where I tend to take annual leave.
+Generally, I've done pretty well to maintain a high level of consistency with the exception of August/December. This is usually where I tend to be away from home on annual leave, and thus, not have access to a piano.
 
 ```{r fig.height=6, fig.width=15}
 raw_data%>%
@@ -195,7 +201,7 @@ raw_data%>%
 
 We can see that my practice time was correlated with the consistency, where the average session was much shorter in the months I was away from the piano. There's also a trend where my practice close to an exam session was significantly higher than any other time of the year. **Can you spot in which month I had my exam in 2019? What about the end of 2020?**
 
-*average practice length per month includes the days in which I did not practice*
+*the average practice length per month includes the days in which I did not practice*
 
 ### overall {-}
 
@@ -226,7 +232,7 @@ raw_data%>%
 
 ### Year on Year {-}
 
-Similar trends as before are apparent where my average daily session is longer before the exams than any other time in the year and a dip in the months where I usually take most of my annual leave. I really do need to start picking up the pace and get back to where I used to be.
+Similar trends as before are apparent where my average daily session is longer before the exams than during any other time in the year and a dip in the months where I usually take most of my annual leave. I really do need to start picking up the pace and get back to where I used to be.
 
 ```{r fig.height=6, fig.width=15}
 raw_data%>%
@@ -280,7 +286,7 @@ inference <- raw_data%>%
 
 ### skewness assumption {-}
 
-Given the extremely low p-value, the Shapiro-Wilk normality test implies that the distribution of the data is significantly different from a normal distribution and that we cannot assume the normality. However, we're working with the entire population dataset for each class and thus, unlike the independence of data, this assumption is not crucial.
+Given the extremely low p-value, the Shapiro-Wilk normality test implies that the distribution of the data is significantly different from a normal distribution and that we cannot assume the normality assumption. However, we're working with the entire population dataset for each class and thus, unlike the independence of data, this assumption is not crucial.
   
 ```{r}
   inference %>% 
@@ -294,7 +300,7 @@ Given the extremely low p-value, the Shapiro-Wilk normality test implies that th
 
 ### equal variances assumption {-}
 
-We can see that with a large p value, we should fail to reject the Null hypothesis (Ho) and conclude that we do not have evidence to believe that population variances are not equal and use the equal variances assumption for our t test
+We can see that with a large p value, we should fail to reject the null hypothesis (Ho) and conclude that we do not have evidence to believe that population variances are not equal. We can assume that the equal variances assumption was met for our t test
 
 ```{r}
 tidy(leveneTest(inference$Duration~inference$Covid_Status))%>%
@@ -360,7 +366,7 @@ graph_practice(Project, 3)
 
 ### ABRSM grade {-}
 
-Simplified, ABBRSM grades are a group of 8 exams based on their difficulty (1 - beginner to 8 - advanced). There are also diploma grades but those are extremely advanced, equivalent to university level studies and out of the scope of this analysis. 
+Simplified, ABRSM grades are a group of 8 exams based on their difficulty (1 - beginner to 8 - advanced). There are also diploma grades but those are extremely advanced, equivalent to university level studies and out of the scope of this analysis. 
 
 More information can be found on their official website at https://gb.abrsm.org/en/exam-support/your-guide-to-abrsm-exams/
 
@@ -382,9 +388,9 @@ model_data%>%
 ### level {-}
 
 A further aggregation of ABRSM grades; this is helpful given the very limited dataset within each grade and much easier on the eye. This is an oversimplification but they're classified as:
-  * 1-5: Beginner (1)
-  * 5-6: Intermediate (2)
-  * 7-8: Advanced (3)
+  * 1-4: Beginner
+  * 5-6: Intermediate
+  * 7-8: Advanced
 
 ```{r}
 model_data%>%
@@ -439,7 +445,7 @@ model_data%>%
 
 ## Does "pausing" a piece impact the total time required to learn it?
 
-How do we differentiate between pieces that we learn once and those that we come back to repeatedly? Examples could include wanting to improve the playing further, loving it so much we wanted to relearn it, preparing it for a new performance, etc.
+How do we differentiate between pieces that we learn once and those that we come back to repeatedly? Examples could include wanting to improve the playing further, loving it so much we wanted to relearn it, preparing it for a new recital performance, etc.
 
 As anyone that ever played the piano knows, re-learning a piece, particularly after you "drop" it for a few months/years, results in a much better performance/understanding of the piece. I definitely found that to be true in my experience, particularly with my exam pieces.The downside is that these pieces take longer to learn.
 
@@ -484,7 +490,7 @@ model_data%>%
 
 # Modelling
 
-Question: **How long would it take to learn a piece based on various factors?**
+Question: **Can we predict how long it would take to learn a piano piece based on a number of factors? If so, which factors influenced the total amount of hours required to learn the piece the most?**
 
 ## outliers
 
@@ -504,10 +510,10 @@ There are no missing values in the modelling dataset following the ETL process.
   * **ABRSM grade**: 1 to 8
   * **Genre**: Baroque, Classical, Romantic, Modern
   * **Break**: learning it continuously or setting it aside for a while (1 month minimum)
-  * **Standard** of practice: public performance or average (relative to someone's level of playing)
+  * **Standard** of practice: public performance or casual (relative to someone's level of playing)
 * **numerical**:
   * **Experience**: total hours practiced before the first practice session on each piece
-  * piece **Length**: minutes
+  * **Length** of the piece: minutes
 
 ## pre-processing
 
@@ -619,7 +625,7 @@ We chose the Random Forest model as it was the best performing model. It is know
 
 * not very sensitive to outliers
 * good for non-linearity
-* variable importance can be biased if categorical variables have few levels (toward high levels) or are correlated
+* however, variable importance can be biased if categorical variables have few levels (toward high levels) or are correlated
 
 ```{r}
 summary(model_comparison)
@@ -627,7 +633,7 @@ summary(model_comparison)
 
 ## model evaluation
 
-Based on our regression model, it does not look like we have significant multicollinearity between the full model variables so we can continue as it is.
+Based on our regression model, it does not look like we have significant multicollinearity between the full model variables so we can continue with our full model of 6 variables.
 
 ```{r}
 tidy(vif(model3$finalModel))%>%
@@ -713,7 +719,7 @@ ggplot(model_data2, aes(sample=Residuals))+
 
 ### independence of residuals (and hence observations)
 
-There seems to be a slight trend where newer pieces have a smaller residuals. This could mean a lack of independence from the order of data collection (the model predictions are based on my current level).
+There seems to be a slight trend where newer pieces have a smaller residuals. This could mean a lack of independence from the order of data collection (the model predictions are based on my current level of playing).
 
 ```{r}
 model_data2%>%
@@ -732,10 +738,10 @@ model_data2%>%
 
 ### actuals versus residuals
 
-Looking at the variability of errors, there is still a tendency to over-predict for pieces that took very little and under-predict for the more difficult ones. There could be two main reasons for this:
+Looking at the variability of errors, there is still a tendency to over-predict for pieces that took very little time to learn and under-predict for the more difficult ones. There could be two main reasons for this:
 
-* practicing an old piece in order to further improve (which naturally adds more practice time as I re-learn it)
-* learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
+  -   artificially inflating the number of hours spent on a piece by returning to it a second time (due to a recital performance, wanting to improve the interpretation further or simply just liking it enough to play it again)
+  -   learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
 
 ```{r}
 p <- ggplot(model_data2, aes(Actual, Residuals, label = Predicted))+
@@ -754,7 +760,7 @@ p
 
 ## Linear Regression (LR) or Random Forest (RF)?
 
-We can see that the Random Forest performed significantly better than the Linear Regression model. This isn't surprising since there might be non-linear trends within the data, and RFs are known to be more accurate.
+We can see that the Random Forest performed significantly better than the simpler Linear Regression model. This isn't surprising since there might be non-linear trends within the data, and RFs are known to be more accurate (at the cost of interpretability and computing power).
 
 ```{r}
 tidy(compare_models(model3, model5))%>%
@@ -766,9 +772,9 @@ tidy(compare_models(model3, model5))%>%
 
 ```{r predictors}
 ggplot(model5)+
-  geom_line(lwd = 1.25, colour = "orange")+
-  geom_point(size = 3, colour = "orange")+
-  geom_point(aes(x = 6, y = 6.755926), size = 8, shape = 21, fill = "orange", col = "black")+
+  geom_line(lwd = 1.25, colour = "black")+
+  geom_point(size = 3, shape = 21, fill = "orange", col = "black")+
+  geom_point(aes(x = 6, y = 7.622789), size = 10, shape = 21, fill = "orange", col = "black")+
   labs(subtitle = "The most optimal model was that with 6 predictors")+
   scale_color_tron()+
   scale_fill_tron()+
@@ -777,7 +783,7 @@ ggplot(model5)+
 
 ## What were the most important variables?
 
-We can now see that the most important variables seemed to be the length of the piece, my experience prior to starting a piece and time difficulty of the piece. These were also confirmed by the linear regression model.
+The most important variables were shown to be the **length of the piece**, **standard of playing**(performance vs casual) and **experience**(lifetime total practice before first practice session on each piece)
 
 ```{r factors}
 imp <- as.matrix(varImp(model5)$importance)%>%
@@ -803,27 +809,33 @@ ggplot(imp, aes(Feature, Importance))+
 
 # Limitations
 
-* very **limited data** which did not allow for a train/test split; however, a bootstrap resampling method is known to be a good substitute
-* biased to **one person's** learning ability (others might learn faster or slower)
-* on top of total hours of practice, **quality of practice** is a significant factor which is not captured in this dataset
-* very **difficult to assess when a piece is "finished"** as you can always further improve on your interpretation
-* not all pieces had official **ABRSM ratings** and a few had to be estimated; even for those that do have an official rating, the difficulty of a piece is highly subjective to each pianist and hard to quantify with one number
-* **memorisation** might be a confounding variable that was not accounted for; sometimes there's an effort to practice a bit for longer just to memorise without an improvement in performance
+-   very **limited data** which did not allow for a train/test split; however, a bootstrap resampling method is known to be a good substitute
+-   biased to **one person's** learning ability (others might learn faster or slower)
+-   on top of total hours of practice, **quality of practice** is a significant factor which is not captured in this dataset
+-   very **difficult to assess when a piece is "finished"** as you can always further improve on your interpretation
+-   not all pieces had official **ABRSM ratings** and a few had to be estimated; even for those that do have an official rating, the difficulty of a piece is highly subjective to each pianist and hard to quantify with one number
+-   **memorisation** might be a confounding variable that was not accounted for and it could lead to inflating the numbers required on a specific piece
+
+# What's next?
+
+-   keep practicing, gather more data and refresh this analysis + adjust the model
+-   add a recommender tab to the shiny dashboard to recommend pieces based on specific features
+-   connect to the Toggl API for live updates
 
 # Hardest things about this analysis:
 
-* the Extract-Transform-Load process - clean the "dirty data" and find creative ways to input the data on the front end of the app to make it reporting friendly on the back-end (with all the variables such as Genre, Type of practice, Composer and Piece name, tag pieces as "work in progress" etc)
-* automate ways to differentiate between pieces that I came back to vs pieces I only studied once
+* the Extract-Transform-Load process - cleaning the "dirty data" and finding creative ways to input the data on the front-end of the app in order to make it reporting friendly on the back-end
+  * especially true for metadata such as Genre, Type of practice, Composer and Piece name, tag pieces as "work in progress", etc
+* automate ways to differentiate between pieces that I came back to vs pieces I only studied once (such whether the maximum difference between two consecutive practice sessions exceeded a threshold)
 * work with very limited data
 
 # Interactive application:
 
-* you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/piano-practice-prediction/)
-* https://peterhontaru.shinyapps.io/piano-practice-prediction/
+-   you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/piano-practice-prediction/)
+-   <https://peterhontaru.shinyapps.io/piano-practice-prediction/>
 
 # What's next?
 
-* keep practicing, gather more data and refresh this analysis + update the model
-* add a recommender tab to the shiny dashboard where people could be recommended a piece based on specific features
-* connect to the Toggl API for live updates
-* I started tracking sight-reading/technique so maybe will look into reporting on that too once I gather some data
+-   keep practicing, gather more data and refresh this analysis + adjust the model
+-   add a recommender tab to the shiny dashboard to recommend pieces based on specific features
+-   connect to the Toggl API for live updates

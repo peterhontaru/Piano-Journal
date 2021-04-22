@@ -95,7 +95,8 @@ model_data <- raw_data%>%
   left_join(table_existing_info, by = "Project")%>%
   mutate(ABRSM = as.factor(ABRSM),
          Level = as.factor(ifelse(ABRSM %in% c(1,2,3,4), "Beginner",
-                                  ifelse(ABRSM %in% c(5,6), "Intermediate", "Advanced"))),
+                                  ifelse(ABRSM %in% c(5,6), "Intermediate", 
+                                         ifelse(ABRSM %in% c(7,8), "Advanced", "Not available")))),
          Standard = as.factor(Standard),
          ABRSM = fct_relevel(ABRSM, levels = c("1", "2", "3", "4", "5", "6", "7", "8")),
          Level = fct_relevel(Level, levels = c("Beginner", "Intermediate", "Advanced")),

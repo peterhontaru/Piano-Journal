@@ -26,29 +26,35 @@
 
 # Introduction
 
-## What am I hoping to achieve with this project?
+## Problem statement {-}
 
-* predict how long it will take to learn a piece based on various features
-* discover insights into my practice habits and find areas where I need to improve
-* develop a recommender tool of piano pieces for others to select from based on factors of interest
-* hopefully act as a source of inspiration/realistic piano progress for others who want to learn a musical instrument
+### the why {-}
 
-**Context**: I started playing the piano in 2018 as a complete beginner and I've been tracking my practice time for around 2 and a half years. I now decided to put that to good use and see what interesting patterns I might be able to find.
+Learning a piano piece is a time-intensive process. Like with most other things, we tend to overestimate our own ability and then become frustrated that we cannot learn and play that Chopin piece like a concert pianist after only 30 minutes of practice. Fortunately, unlike what you might hear on Wall Street, previous performance **is** indicative of future success.
 
-An example of my video (around 2 years into playing here):
+There's also a secondary goal here to hopefully provide a source of inspiration for other people that have always thought to themselves "**one day I'll learn a musical instrument**". Any other skill qualifies here, though. I aim to be doing this by, at the very least, allowing for visibility into my own journey. If this is what you want, why not give it a try?
+
+### the what {-}
+
+**Can we predict how long it would take to learn a piano piece based on a number of factors? If so, which factors influenced the total amount of hours required to learn the piece the most?**
+
+### context {-}
+
+I started playing the piano in 2018 as a complete beginner and I've been tracking my practice time for around 2 and a half years. I've now decided to put that data to good use and see what interesting patterns I might be able to find and hopefully develop a tool that others might be able to use in their journeys.
+
+Here's an example of a recent performance - I mainly play classical music but cannot help but love Elton John's music.
 
 <div align="center">
    <iframe width="560" height="315" src="https://www.youtube.com/embed/eTJiT6TXIcw" frameborder="0" data-external="1" allowfullscreen>
    </iframe>
 </div>
 
-## Data collection
+## Data collection {-}
 
-* imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18)
-* everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
-* these times include my practice sessions (usually in short bouts of 30 minutes); piano lessons are excluded (usually 2-3 hours total per month)
-* individual pieces were tracked from '19 onwards (initially it was just a generic "piano")
-* the **Extract, Transform, Load** script is available in the global.R file of this repo
+-   imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18) and on Excel spreadsheet for Nov '18
+-   everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
+-   time spent in piano lessons was not tracked/included (usually 2-3 hours total per month)
+-   the **Extract, Transform, Load** script is available in the **global.R** file of this repo
 
 **Disclaimer**: I am not affiliated with Toggl. I started using it a few years ago because it provided all the functionality I needed and loved its minimalistic design. The standard membership, which I use, is free of charge.
 
@@ -56,16 +62,16 @@ An example of my video (around 2 years into playing here):
 
 ## Summary:
 
-* identified various trends in average daily practice session, time of year, etc
-* pieces could take me anywhere from around 4 hours to 40+ hours, subject to difficulty (as assessed by the ABRSM grade)
-* the Random Forrest model was shown to be the most optimal model
-  - **Rsquared** (0.585)
-  - **MAE** - 5.9 hours 
-  - **RMSE** - 7.5 hours
-  * Looking at the variability of errors, there is still a tendency to over-predict for pieces that took very little and under-predict for the more difficult ones. There could be two main reasons for this:
-    * practicing an old piece in order to further improve (which naturally adds more practice time as I re-learn it)
-    * learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
-* the most important variables were shown to be the number of **length of the piece**, **standard of playing** (performance vs casual) and **experience**(cumulative hours before first practice session on each piece)
+* identified various trends in my practice habits
+* pieces could take me anywhere from ~4 hours to 40+ hours of practice, subject to difficulty (as assessed by the ABRSM grade)
+* the **Random Forest** model was shown to be the most optimal model *(bootstrap resampling, 25x)*
+    -   **Rsquared** - 0.59
+    -   **MAE** - 5.9 hours
+    -   **RMSE** - 7.5 hours
+* looking at the variability of errors, there is a tendency to over-predict for pieces that took very little time to learn and under-predict for the more difficult ones. There could be two main reasons for this:
+  -   artificially inflating the number of hours spent on a piece by returning to it a second time (due to a recital performance, wanting to improve the interpretation further or simply just liking it enough to play it again)
+  -   learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
+-   the most important variables were shown to be the **length of the piece**, **standard of playing**(performance vs casual) and **experience**(lifetime total practice before first practice session on each piece)
 
 
 
@@ -75,35 +81,35 @@ An example of my video (around 2 years into playing here):
 
 ## Piano practice timeline
 
-<img src="figures/unnamed-chunk-3-1.png" width="100%" />
+<img src="figs/unnamed-chunk-3-1.png" width="100%" />
 
 ## How long did I practice per piece?
 
 Based on the level at the time and the difficulty of the piece, we can see that each piece took around 10-30 hours of practice.
 
-<img src="figures/timeline-1.gif" width="100%" />
+<img src="figs/timeline-1.gif" width="100%" />
 
 ## How consistent was my practice?
 
-Generally, I've done pretty well to maintain a high level of consistency with the exception of August/December. This is usually where I tend to take annual leave.
+Generally, I've done pretty well to maintain a high level of consistency with the exception of August/December. This is usually where I tend to be away from home on annual leave, and thus, not have access to a piano.
 
-<img src="figures/unnamed-chunk-4-1.png" width="100%" />
+<img src="figs/unnamed-chunk-4-1.png" width="100%" />
 
 ## Was there a trend in my amount of daily average practice? {.tabset .tabset-fade .tabset-pills}
 
 We can see that my practice time was correlated with the consistency, where the average session was much shorter in the months I was away from the piano. There's also a trend where my practice close to an exam session was significantly higher than any other time of the year. **Can you spot in which month I had my exam in 2019? What about the end of 2020?**
 
-*average practice length per month includes the days in which I did not practice*
+*the average practice length per month includes the days in which I did not practice*
 
 ### overall {-}
 
-<img src="figures/unnamed-chunk-5-1.png" width="100%" />
+<img src="figs/unnamed-chunk-5-1.png" width="100%" />
 
 ### Year on Year {-}
 
-Similar trends as before are apparent where my average daily session is longer before the exams than any other time in the year and a dip in the months where I usually take most of my annual leave. I really do need to start picking up the pace and get back to where I used to be.
+Similar trends as before are apparent where my average daily session is longer before the exams than during any other time in the year and a dip in the months where I usually take most of my annual leave. I really do need to start picking up the pace and get back to where I used to be.
 
-<img src="figures/unnamed-chunk-6-1.png" width="100%" />
+<img src="figs/unnamed-chunk-6-1.png" width="100%" />
 
 ## Did COVID significantly impact my practice time? {.tabset .tabset-fade .tabset-pills}
 
@@ -111,11 +117,11 @@ Similar trends as before are apparent where my average daily session is longer b
 
 Despite a similar median, we can see that the practice sessions were less likely to be over 80 min after COVID. We can test if this was a significant impact with a t-test.
 
-<img src="figures/unnamed-chunk-7-1.png" width="100%" />
+<img src="figs/unnamed-chunk-7-1.png" width="100%" />
 
 ### skewness assumption {-}
 
-Given the extremely low p-value, the Shapiro-Wilk normality test implies that the distribution of the data is significantly different from a normal distribution and that we cannot assume the normality. However, we're working with the entire population dataset for each class and thus, unlike the independence of data, this assumption is not crucial.
+Given the extremely low p-value, the Shapiro-Wilk normality test implies that the distribution of the data is significantly different from a normal distribution and that we cannot assume the normality assumption. However, we're working with the entire population dataset for each class and thus, unlike the independence of data, this assumption is not crucial.
   
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <caption>Shapiro-Wilk normality test</caption>
@@ -145,7 +151,7 @@ Given the extremely low p-value, the Shapiro-Wilk normality test implies that th
 
 ### equal variances assumption {-}
 
-We can see that with a large p value, we should fail to reject the Null hypothesis (Ho) and conclude that we do not have evidence to believe that population variances are not equal and use the equal variances assumption for our t test
+We can see that with a large p value, we should fail to reject the null hypothesis (Ho) and conclude that we do not have evidence to believe that population variances are not equal. We can assume that the equal variances assumption was met for our t test
 
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <caption>Levene's test</caption>
@@ -204,52 +210,52 @@ My practice sessions post-COVID are significantly shorter than those before the 
 
 ### by genre {-}
 
-<img src="figures/unnamed-chunk-11-1.png" width="100%" />
+<img src="figs/unnamed-chunk-11-1.png" width="100%" />
 
 ### by composer {-}
 
-<img src="figures/unnamed-chunk-12-1.png" width="100%" />
+<img src="figs/unnamed-chunk-12-1.png" width="100%" />
 
 ### by piece {-}
 
-<img src="figures/unnamed-chunk-13-1.png" width="100%" />
+<img src="figs/unnamed-chunk-13-1.png" width="100%" />
 
 ## Relation between difficulty and number of practice hours {.tabset .tabset-fade .tabset-pills}
 
 ### ABRSM grade {-}
 
-Simplified, ABBRSM grades are a group of 8 exams based on their difficulty (1 - beginner to 8 - advanced). There are also diploma grades but those are extremely advanced, equivalent to university level studies and out of the scope of this analysis. 
+Simplified, ABRSM grades are a group of 8 exams based on their difficulty (1 - beginner to 8 - advanced). There are also diploma grades but those are extremely advanced, equivalent to university level studies and out of the scope of this analysis. 
 
 More information can be found on their official website at https://gb.abrsm.org/en/exam-support/your-guide-to-abrsm-exams/
 
-<img src="figures/unnamed-chunk-14-1.png" width="100%" />
+<img src="figs/unnamed-chunk-14-1.png" width="100%" />
 
 ### level {-}
 
 A further aggregation of ABRSM grades; this is helpful given the very limited dataset within each grade and much easier on the eye. This is an oversimplification but they're classified as:
-  * 1-5: Beginner (1)
-  * 5-6: Intermediate (2)
-  * 7-8: Advanced (3)
+  * 1-4: Beginner
+  * 5-6: Intermediate
+  * 7-8: Advanced
 
-<img src="figures/unnamed-chunk-15-1.png" width="100%" />
+<img src="figs/unnamed-chunk-15-1.png" width="100%" />
 
 ## What about the piece length?
 
-<img src="figures/unnamed-chunk-16-1.png" width="100%" />
+<img src="figs/unnamed-chunk-16-1.png" width="100%" />
 
 ## Learning effect - do pieces of the same difficulty become easier to learn with time?
 
 We can spot a trend where the time required to learn a piece of a similar difficulty (ABRSM Grade) decreases as my ability to play the piano increases (as judged by cumulative hours of practice). We should keep this in mind and include it as a variable into our prediction model.
 
-<img src="figures/unnamed-chunk-17-1.png" width="100%" />
+<img src="figs/unnamed-chunk-17-1.png" width="100%" />
 
 ## Does "pausing" a piece impact the total time required to learn it?
 
-How do we differentiate between pieces that we learn once and those that we come back to repeatedly? Examples could include wanting to improve the playing further, loving it so much we wanted to relearn it, preparing it for a new performance, etc.
+How do we differentiate between pieces that we learn once and those that we come back to repeatedly? Examples could include wanting to improve the playing further, loving it so much we wanted to relearn it, preparing it for a new recital performance, etc.
 
 As anyone that ever played the piano knows, re-learning a piece, particularly after you "drop" it for a few months/years, results in a much better performance/understanding of the piece. I definitely found that to be true in my experience, particularly with my exam pieces.The downside is that these pieces take longer to learn.
 
-<img src="figures/unnamed-chunk-18-1.png" width="100%" />
+<img src="figs/unnamed-chunk-18-1.png" width="100%" />
 
 ## Repertoire
 
@@ -490,12 +496,12 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Minuet in G - 114 </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 4 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> NA </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> NA </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 726 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> NA </td>
-   <td style="text-align:left;"> Advanced </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> 1 </td>
+   <td style="text-align:left;"> Beginner </td>
    <td style="text-align:left;"> 2019-12-06 </td>
   </tr>
   <tr>
@@ -574,12 +580,12 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Minuet in G - 116 </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 8 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> NA </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> NA </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 361 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Yes </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> NA </td>
-   <td style="text-align:left;"> Advanced </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> 1 </td>
+   <td style="text-align:left;"> Beginner </td>
    <td style="text-align:left;"> 2019-03-04 </td>
   </tr>
   <tr>
@@ -611,7 +617,7 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
 
 # Modelling
 
-Question: **How long would it take to learn a piece based on various factors?**
+Question: **Can we predict how long it would take to learn a piano piece based on a number of factors? If so, which factors influenced the total amount of hours required to learn the piece the most?**
 
 ## outliers
 
@@ -629,10 +635,10 @@ There are no missing values in the modelling dataset following the ETL process.
   * **ABRSM grade**: 1 to 8
   * **Genre**: Baroque, Classical, Romantic, Modern
   * **Break**: learning it continuously or setting it aside for a while (1 month minimum)
-  * **Standard** of practice: public performance or average (relative to someone's level of playing)
+  * **Standard** of practice: public performance or casual (relative to someone's level of playing)
 * **numerical**:
   * **Experience**: total hours practiced before the first practice session on each piece
-  * piece **Length**: minutes
+  * **Length** of the piece: minutes
 
 ## pre-processing
 
@@ -654,7 +660,7 @@ We chose the Random Forest model as it was the best performing model. It is know
 
 * not very sensitive to outliers
 * good for non-linearity
-* variable importance can be biased if categorical variables have few levels (toward high levels) or are correlated
+* however, variable importance can be biased if categorical variables have few levels (toward high levels) or are correlated
 
 
 ```
@@ -667,38 +673,38 @@ We chose the Random Forest model as it was the best performing model. It is know
 ## 
 ## MAE 
 ##               Min.  1st Qu.   Median     Mean  3rd Qu.      Max. NA's
-## ranger    3.021008 4.266143 4.946282 5.299442 6.243741  7.922518    0
-## lmStepAIC 4.028395 5.690166 7.868767 8.503530 9.837814 17.181537    0
-## lm        2.039521 5.772827 7.115061 7.641375 8.368587 16.692018    0
-## ridge     3.406549 4.539113 4.997571 5.161525 6.107118  6.701543   13
-## rf        1.996873 4.456777 5.186487 5.185054 5.888977  7.589383    0
-## gbm       2.553344 5.186242 6.269624 6.590318 8.017100 11.058042    0
-## pls       3.322617 4.289868 4.661391 4.939639 6.014574  6.505947    0
+## ranger    3.216848 4.546412 5.226721 5.350732 6.185954  8.074644    0
+## lmStepAIC 4.059373 6.035128 6.625829 7.373961 8.656703 12.293508    0
+## lm        3.457466 6.104998 6.831580 7.407868 8.107952 16.638647    0
+## ridge     3.514506 5.195608 5.904643 5.936369 7.002558  7.751690   10
+## rf        2.867137 5.123509 5.592698 5.959335 6.989707  8.722035    0
+## gbm       4.593238 6.146348 6.951988 7.261349 8.076775 16.990824    0
+## pls       4.460543 5.041959 5.930350 5.848360 6.295627  7.970644    0
 ## 
 ## RMSE 
-##               Min.  1st Qu.   Median      Mean   3rd Qu.      Max. NA's
-## ranger    3.864228 5.315607 6.162724  6.350531  7.357032  9.001666    0
-## lmStepAIC 4.956079 7.563875 9.427272 10.849266 12.508605 22.507683    0
-## lm        2.072607 7.474750 8.841582  9.608014 10.506074 21.748986    0
-## ridge     3.789583 5.322770 6.175154  6.371706  7.532710  8.867574   13
-## rf        2.845897 5.896209 6.423869  6.527895  7.398713  9.887790    0
-## gbm       2.863830 7.040941 8.600280  8.355581  9.551342 12.558296    0
-## pls       3.398100 5.122330 5.592774  5.753895  6.480938  8.004247    0
+##               Min.  1st Qu.   Median     Mean   3rd Qu.      Max. NA's
+## ranger    4.531594 5.821475 6.907062 6.876131  7.614550 10.521156    0
+## lmStepAIC 4.678084 7.290730 8.706652 9.067898 10.179064 15.976038    0
+## lm        3.979872 8.065115 8.705383 9.404728 10.412562 19.451739    0
+## ridge     4.989087 6.206758 6.862180 7.045983  7.854493  8.687658   10
+## rf        3.394308 6.640020 7.115649 7.546307  8.461888 11.065527    0
+## gbm       5.906910 7.466537 8.041088 8.843606  8.994092 21.377506    0
+## pls       5.322380 6.303446 7.096138 7.043631  7.345444  9.624458    0
 ## 
 ## Rsquared 
-##                  Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
-## ranger    0.395533303 0.5110174 0.6963843 0.6508775 0.7521799 0.9194498    0
-## lmStepAIC 0.032085810 0.2440455 0.5301134 0.4420157 0.5929040 0.8193574    0
-## lm        0.002773983 0.3152272 0.5205367 0.4709629 0.6646064 0.9594312    0
-## ridge     0.156077140 0.6851875 0.7338446 0.7108150 0.8053173 0.9515817   13
-## rf        0.125014858 0.5885457 0.6937981 0.6618163 0.7600447 0.9296281    0
-## gbm       0.113071932 0.3462277 0.5310918 0.5266083 0.6574668 0.9769281    0
-## pls       0.010994365 0.6228905 0.7980685 0.7319133 0.8426825 0.9723046    0
+##                   Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+## ranger    0.2598148174 0.5915672 0.6861549 0.6395133 0.7899287 0.8801139    0
+## lmStepAIC 0.0005882529 0.4001020 0.5735153 0.5051570 0.6597403 0.8997367    0
+## lm        0.0019980780 0.2879700 0.5871362 0.4965277 0.6363397 0.8958706    0
+## ridge     0.3743315404 0.6559275 0.6807293 0.6828744 0.7764227 0.8621330   10
+## rf        0.1341300382 0.5248279 0.6068158 0.5858350 0.7012294 0.8842650    0
+## gbm       0.0669333944 0.3848695 0.5685371 0.5338006 0.6661362 0.8728232    0
+## pls       0.3579501758 0.6342263 0.6727956 0.6723318 0.7638235 0.8898141    0
 ```
 
 ## model evaluation
 
-Based on our regression model, it does not look like we have significant multicollinearity between the full model variables so we can continue as it is.
+Based on our regression model, it does not look like we have significant multicollinearity between the full model variables so we can continue with our full model of 6 variables.
 
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <caption>Variance Inflation Factor (VIF)</caption>
@@ -710,44 +716,44 @@ Based on our regression model, it does not look like we have significant multico
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> ABRSM5 </td>
-   <td style="text-align:right;"> 5.3 </td>
+   <td style="text-align:left;"> ABRSM6 </td>
+   <td style="text-align:right;"> 4.0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Cumulative_Duration </td>
-   <td style="text-align:right;"> 4.3 </td>
+   <td style="text-align:right;"> 3.9 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> ABRSM6 </td>
-   <td style="text-align:right;"> 4.2 </td>
+   <td style="text-align:left;"> ABRSM5 </td>
+   <td style="text-align:right;"> 3.5 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ABRSM4 </td>
-   <td style="text-align:right;"> 3.8 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Length </td>
-   <td style="text-align:right;"> 2.8 </td>
+   <td style="text-align:right;"> 3.4 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> GenreClassical </td>
-   <td style="text-align:right;"> 2.6 </td>
+   <td style="text-align:right;"> 2.5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Length </td>
+   <td style="text-align:right;"> 2.4 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> StandardPerformance </td>
-   <td style="text-align:right;"> 2.2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ABRSM2 </td>
-   <td style="text-align:right;"> 2.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> GenreRomantic </td>
-   <td style="text-align:right;"> 2.0 </td>
+   <td style="text-align:right;"> 2.4 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> BreakNo </td>
-   <td style="text-align:right;"> 2.0 </td>
+   <td style="text-align:right;"> 2.1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GenreRomantic </td>
+   <td style="text-align:right;"> 1.9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ABRSM2 </td>
+   <td style="text-align:right;"> 1.7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> GenreModern </td>
@@ -758,7 +764,7 @@ Based on our regression model, it does not look like we have significant multico
 
 ### actuals vs predictions
 
-<img src="figures/unnamed-chunk-26-1.png" width="100%" />
+<img src="figs/unnamed-chunk-26-1.png" width="100%" />
 
 ### residual distribution {.tabset .tabset-fade .tabset-pills}
 
@@ -766,32 +772,32 @@ Based on our regression model, it does not look like we have significant multico
 
 We can see that the residuals are mostly situated around 0.
 
-<img src="figures/unnamed-chunk-27-1.png" width="100%" />
+<img src="figs/unnamed-chunk-27-1.png" width="100%" />
 
 #### QQ plot / normal probability plot of residuals {-}
 
 Similar to the previous histogram, we can spot some deviations from the normal distribution.
 
-<img src="figures/unnamed-chunk-28-1.png" width="100%" />
+<img src="figs/unnamed-chunk-28-1.png" width="100%" />
 
 ### independence of residuals (and hence observations)
 
-There seems to be a slight trend where newer pieces have a smaller residuals. This could mean a lack of independence from the order of data collection (the model predictions are based on my current level).
+There seems to be a slight trend where newer pieces have a smaller residuals. This could mean a lack of independence from the order of data collection (the model predictions are based on my current level of playing).
 
-<img src="figures/unnamed-chunk-29-1.png" width="100%" />
+<img src="figs/unnamed-chunk-29-1.png" width="100%" />
 
 ### actuals versus residuals
 
-Looking at the variability of errors, there is still a tendency to over-predict for pieces that took very little and under-predict for the more difficult ones. There could be two main reasons for this:
+Looking at the variability of errors, there is still a tendency to over-predict for pieces that took very little time to learn and under-predict for the more difficult ones. There could be two main reasons for this:
 
-* practicing an old piece in order to further improve (which naturally adds more practice time as I re-learn it)
-* learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
+  -   artificially inflating the number of hours spent on a piece by returning to it a second time (due to a recital performance, wanting to improve the interpretation further or simply just liking it enough to play it again)
+  -   learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
 
-<img src="figures/unnamed-chunk-30-1.png" width="100%" />
+<img src="figs/unnamed-chunk-30-1.png" width="100%" />
 
 ## Linear Regression (LR) or Random Forest (RF)?
 
-We can see that the Random Forest performed significantly better than the Linear Regression model. This isn't surprising since there might be non-linear trends within the data, and RFs are known to be more accurate.
+We can see that the Random Forest performed significantly better than the simpler Linear Regression model. This isn't surprising since there might be non-linear trends within the data, and RFs are known to be more accurate (at the cost of interpretability and computing power).
 
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <caption>Model 1 vs model 2</caption>
@@ -809,12 +815,12 @@ We can see that the Random Forest performed significantly better than the Linear
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 3.080119 </td>
-   <td style="text-align:right;"> 3.333892 </td>
-   <td style="text-align:right;"> 0.0027725 </td>
+   <td style="text-align:right;"> 1.858421 </td>
+   <td style="text-align:right;"> 3.01994 </td>
+   <td style="text-align:right;"> 0.0059183 </td>
    <td style="text-align:right;"> 24 </td>
-   <td style="text-align:right;"> 1.173323 </td>
-   <td style="text-align:right;"> 4.986915 </td>
+   <td style="text-align:right;"> 0.5883319 </td>
+   <td style="text-align:right;"> 3.12851 </td>
    <td style="text-align:left;"> One Sample t-test </td>
    <td style="text-align:left;"> two.sided </td>
   </tr>
@@ -823,37 +829,43 @@ We can see that the Random Forest performed significantly better than the Linear
 
 ## How many predictors did the most optimal model have?
 
-<img src="figures/predictors-1.png" width="100%" />
+<img src="figs/predictors-1.png" width="100%" />
 
 ## What were the most important variables?
 
-We can now see that the most important variables seemed to be the length of the piece, my experience prior to starting a piece and time difficulty of the piece. These were also confirmed by the linear regression model.
+The most important variables were shown to be the **length of the piece**, **standard of playing**(performance vs casual) and **experience**(lifetime total practice before first practice session on each piece)
 
-<img src="figures/factors-1.png" width="100%" />
+<img src="figs/factors-1.png" width="100%" />
 
 # Limitations
 
-* very **limited data** which did not allow for a train/test split; however, a bootstrap resampling method is known to be a good substitute
-* biased to **one person's** learning ability (others might learn faster or slower)
-* on top of total hours of practice, **quality of practice** is a significant factor which is not captured in this dataset
-* very **difficult to assess when a piece is "finished"** as you can always further improve on your interpretation
-* not all pieces had official **ABRSM ratings** and a few had to be estimated; even for those that do have an official rating, the difficulty of a piece is highly subjective to each pianist and hard to quantify with one number
-* **memorisation** might be a confounding variable that was not accounted for; sometimes there's an effort to practice a bit for longer just to memorise without an improvement in performance
+-   very **limited data** which did not allow for a train/test split; however, a bootstrap resampling method is known to be a good substitute
+-   biased to **one person's** learning ability (others might learn faster or slower)
+-   on top of total hours of practice, **quality of practice** is a significant factor which is not captured in this dataset
+-   very **difficult to assess when a piece is "finished"** as you can always further improve on your interpretation
+-   not all pieces had official **ABRSM ratings** and a few had to be estimated; even for those that do have an official rating, the difficulty of a piece is highly subjective to each pianist and hard to quantify with one number
+-   **memorisation** might be a confounding variable that was not accounted for and it could lead to inflating the numbers required on a specific piece
+
+# What's next?
+
+-   keep practicing, gather more data and refresh this analysis + adjust the model
+-   add a recommender tab to the shiny dashboard to recommend pieces based on specific features
+-   connect to the Toggl API for live updates
 
 # Hardest things about this analysis:
 
-* the Extract-Transform-Load process - clean the "dirty data" and find creative ways to input the data on the front end of the app to make it reporting friendly on the back-end (with all the variables such as Genre, Type of practice, Composer and Piece name, tag pieces as "work in progress" etc)
-* automate ways to differentiate between pieces that I came back to vs pieces I only studied once
+* the Extract-Transform-Load process - cleaning the "dirty data" and finding creative ways to input the data on the front-end of the app in order to make it reporting friendly on the back-end
+  * especially true for metadata such as Genre, Type of practice, Composer and Piece name, tag pieces as "work in progress", etc
+* automate ways to differentiate between pieces that I came back to vs pieces I only studied once (such whether the maximum difference between two consecutive practice sessions exceeded a threshold)
 * work with very limited data
 
 # Interactive application:
 
-* you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/piano-practice-prediction/)
-* https://peterhontaru.shinyapps.io/piano-practice-prediction/
+-   you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/piano-practice-prediction/)
+-   <https://peterhontaru.shinyapps.io/piano-practice-prediction/>
 
 # What's next?
 
-* keep practicing, gather more data and refresh this analysis + update the model
-* add a recommender tab to the shiny dashboard where people could be recommended a piece based on specific features
-* connect to the Toggl API for live updates
-* I started tracking sight-reading/technique so maybe will look into reporting on that too once I gather some data
+-   keep practicing, gather more data and refresh this analysis + adjust the model
+-   add a recommender tab to the shiny dashboard to recommend pieces based on specific features
+-   connect to the Toggl API for live updates
