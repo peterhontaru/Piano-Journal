@@ -152,7 +152,7 @@ Full project available:
     recommend previewing it at the link above since it was originally
     designed as a HTML document)
 
-# Interactive application:
+# Interactive application: (IN PROGRESS)
 
 -   you can find an interactive display of this presentation, as well as
     the model in production at the [following
