@@ -39,11 +39,11 @@ ui <- dashboardPage(
                     tags$li(class = "dropdown", tags$a(href = "mailto:PetrisorHontaru@gmail.com?subject=Piano App Enquiry",
                                                        icon("envelope-square"), "Reach out for enquiries")),
                     tags$li(class = "dropdown", tags$a(href = "https://www.youtube.com/channel/UCnsFyYF1tpBdwu6hE7U9Thg",
-                                       icon("youtube"),  target = "_blank", "My piano videos")),
+                                                       icon("youtube"),  target = "_blank", "My piano videos")),
                     tags$li(class = "dropdown", tags$a(href = "https://uk.linkedin.com/in/peterhontaru",
-                                       icon("linkedin"), target = "_blank", "LinkedIn")),
+                                                       icon("linkedin"), target = "_blank", "LinkedIn")),
                     tags$li(class = "dropdown", tags$a(href = "https://github.com/peterhontaru/Piano-Journal",
-                                       icon("github"), target = "_blank", "Github"))),
+                                                       icon("github"), target = "_blank", "Github"))),
     
     ## Sidebar ----------------------------------------------------------
     dashboardSidebar(
@@ -52,12 +52,12 @@ ui <- dashboardPage(
             menuItem("Dashboard", icon = icon("clipboard"),
                      menuSubItem("timeline", tabName = "dashboard_timeline"),
                      menuSubItem("animation", tabName = "dashboard_animation")
-                     ),
+            ),
             menuItem("Practice sessions", icon = icon("poll"),
                      menuSubItem("previous 30 days", tabName = "dashboard_previous30"),
                      menuSubItem("consistency", tabName = "dashboard_consistency"),
                      menuSubItem("average practice session", tabName = "dashboard_avg_practice")
-                     ),
+            ),
             menuItem("What do I play?", icon = icon("poll"),
                      ### Filters ----------------------------------------------------------
                      menuSubItem("by genre", tabName = "dashboard_genre"),
@@ -66,7 +66,7 @@ ui <- dashboardPage(
                      sliderInput("date", "Date Range", min(as.Date("2019-01-01")), max(raw_data$Date_Start),
                                  value = c(min(as.Date("2019-01-01")), max(raw_data$Date_Start))),
                      selectInput("select_genre", "Genre", choices = c("All", "Baroque", "Classical", "Romantic", "Modern"), selected = "All")
-                     ),
+            ),
             menuItem("Repertoire", tabName = "dashboard_repertoire", icon = icon("user-friends")),
             menuItem("Predict time to learn", tabName = "dashboard_prediction", icon = icon("search"), badgeLabel = "hot!", badgeColor = "red")
         )
@@ -168,11 +168,11 @@ ui <- dashboardPage(
                         helpText('Given that the dataset was based solely on my own data, the model is biased towards my learning performance. In simple terms, it shows how fast I would have learnt a piece based on specific inputs.'),
                         helpText('However, the result will both be an estimate and a range. Hopefully you will find the range to be useful in your own journey. The prediction uses a Random Forest model.'),
                         helpText(sprintf('You can find an in-depth analysis on my'), a("GitHub.", href="https://github.com/peterhontaru/Piano-Journal/"))
-                        )
                     )
             )
         )
     )
+)
 
 # Server ----------------------------------------------------------
 
@@ -305,7 +305,7 @@ server<- function(input, output, session) {
     output$consistency <- renderPlotly({raw_data%>%
             filter(Source != "Estimated")%>%
             mutate(current_month = as.factor(ifelse(Month_Start == max(Month_Start), "Yes", "No")))%>%
-            group_by(Month_Year, Month_Start, Month_format, current_month)%>%
+            group_by(Month_Year, Month_Start, current_month)%>%
             summarise(Days_Practice = n_distinct(Date_Start),
                       Total_Duration = sum(Duration))%>%
             mutate(Days_Total = ifelse(current_month == "Yes", day(today()), days_in_month(Month_Start)), # account for the fact that the current month is incomplete
@@ -313,8 +313,7 @@ server<- function(input, output, session) {
                    Avg_Duration = as.integer(Total_Duration/Days_Total),
                    Consistency = round(Days_Practice / Days_Total * 100,2),
                    Consistency_Status = ifelse(Consistency>=75, "over 75%", "under 75%"),
-                   Consistency_Status = factor(Consistency_Status, levels = c("under 75%", "over 75%")),
-                   Month_format = reorder(Month_format, Month_Year))%>%
+                   Consistency_Status = factor(Consistency_Status, levels = c("under 75%", "over 75%")))%>%
             ungroup()%>%
             mutate(Average = sum(Days_Practice)/sum(Days_Total)*100)%>%
             
@@ -338,14 +337,13 @@ server<- function(input, output, session) {
         raw_data%>%
             filter(Source != "Estimated")%>%
             mutate(current_month = as.factor(ifelse(Month_Start == max(Month_Start), "Yes", "No")))%>%
-            group_by(Month_Year, Month_Start, Month_format, current_month)%>%
+            group_by(Month_Year, Month_Start, current_month)%>%
             summarise(Days_Practice = n_distinct(Date_Start),
                       Total_Duration = sum(Duration))%>%
             mutate(Days_Total = ifelse(current_month == "Yes", day(today()), days_in_month(Month_Start)), # account for the fact that the current month is incomplete
                    Avg_Duration = as.integer(Total_Duration/Days_Total),
                    Avg_Duration_Status = ifelse(Avg_Duration < 60, "under one hour", "over one hour"),
-                   Avg_Duration_Status = factor(Avg_Duration_Status, levels = c("under one hour", "over one hour")),
-                   Month_format = reorder(Month_format, Month_Year))%>%
+                   Avg_Duration_Status = factor(Avg_Duration_Status, levels = c("under one hour", "over one hour")))%>%
             ungroup()%>%
             mutate(Average = sum(Total_Duration)/sum(Days_Total))%>%
             
@@ -362,7 +360,7 @@ server<- function(input, output, session) {
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
                   axis.text.y = element_blank(),
                   axis.ticks.y = element_blank())
-
+        
         ggplotly()%>%
             layout(legend = list(orientation = "h", x = 0.4, y = 1.2))
     })
@@ -397,9 +395,9 @@ server<- function(input, output, session) {
                    `Last practice` = Date_End)%>%
             select(-Link)%>%
             as.data.table()
-            }, 
-        escape = FALSE
-        )
+    }, 
+    escape = FALSE
+    )
     
     ## Prediction model ----------------------------------------------------------
     #React value when using the action button
@@ -411,14 +409,14 @@ server<- function(input, output, session) {
         
         #Dataframe for the single prediction
         values = data.frame(ABRSM = input$p_abrsm,
-                        Genre = input$p_genre,
-                        Cumulative_Duration = input$p_cumulative_duration,
-                        Standard = input$p_standard,
-                        Length = input$p_length)
-    
+                            Genre = input$p_genre,
+                            Cumulative_Duration = input$p_cumulative_duration,
+                            Standard = input$p_standard,
+                            Length = input$p_length)
+        
         #Included the values into the new data
         model_pred <- rbind(model_pred, values)
-    
+        
         #Single prefiction using the randomforest model
         a$result <-  round(predict(model, 
                                    newdata = model_pred[nrow(model_pred),]),

@@ -89,7 +89,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r include=FALSE}
-source("api.R")
+#source("api.R")
 source("global.R")
 ```
 
