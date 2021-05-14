@@ -1,14 +1,14 @@
-name: piano-practice-prediction
-title: piano-practice-prediction
+name: Piano-Journal
+title: Piano-Journal
 username:
 account: peterhontaru
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 4001303
-bundleId: 4597599
-url: https://peterhontaru.shinyapps.io/piano-practice-prediction/
-when: 1620986567.86607
-lastSyncTime: 1620986567.86607
+appId: 4130794
+bundleId: 4597772
+url: https://peterhontaru.shinyapps.io/Piano-Journal/
+when: 1620990111.3592
+lastSyncTime: 1620990111.3592
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .gitattributes|EDA-and-modelling.html|EDA-and-modelling.md|EDA-and-modelling.Rmd|README.md|README.rmd

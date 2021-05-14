@@ -40,7 +40,7 @@ decided to put that data to good use and see what interesting patterns I
 might be able to find and hopefully develop a tool that others might be
 able to use in their journeys.
 
-![Timeline](figs/unnamed-chunk-3-1.png)
+![Timeline](figures/unnamed-chunk-3-1.png)
 
 Here’s an example of a recent performance - I mainly play classical
 music but cannot help but love Elton John’s music.
@@ -53,28 +53,28 @@ music but cannot help but love Elton John’s music.
 
 <div align="center">
 
-[<img src="www/Elton.png" width="550" alt="Elton John - Your Song" />](https://www.youtube.com/embed/eTJiT6TXIcw "Elton John - Your Song")
+[<img src="www/Elton2.jpg" width="550" alt="Elton John - Your Song" />](https://www.youtube.com/embed/3fhhBZyFCzM "Elton John - Your Song")
 
 </div>
 
-# Key insights:
+# Key insights
 
 -   identified various trends in my practice habits (can you guess in
     which month I had my piano exam in 2019?)
 
-![trends](figs/unnamed-chunk-5-1.png)
+![trends](figures/unnamed-chunk-5-1.png)
 
 -   pieces could take me anywhere from \~4 hours to 40+ hours of
     practice, subject to difficulty (as assessed by the ABRSM grade)
 
-![difficulty](figs/unnamed-chunk-15-1.png)
+![difficulty](figures/unnamed-chunk-15-1.png)
 
 -   the **Random Forest** model was shown to be the most optimal model
     *(bootstrap resampling, 25x)*
 
-    -   **Rsquared** - 0.59
-    -   **MAE** - 5.9 hours
-    -   **RMSE** - 7.5 hours
+    -   **Rsquared** - 0.57
+    -   **MAE** - 6.0 hours
+    -   **RMSE** - 7.6 hours
 
 -   looking at the variability of errors, there is still a tendency to
     over-predict for pieces that took very little time to learn and
@@ -89,14 +89,14 @@ music but cannot help but love Elton John’s music.
         learn them faster than expected (based on my earlier data where
         a piece of a similar difficulty took longer)
 
-![Residuals](figs/unnamed-chunk-30-1.png)
+![Residuals](figures/unnamed-chunk-30-1.png)
 
 -   the most important variables were shown to be the **length of the
     piece**, **standard of playing**(performance vs casual) and
     **experience**(lifetime total practice before first practice session
     on each piece)
 
-![factors](figs/factors-1.png)
+![factors](figures/factors-1.png)
 
 # Data collection
 
@@ -107,12 +107,25 @@ music but cannot help but love Elton John’s music.
 -   time spent in piano lessons was not tracked/included (usually 2-3
     hours total per month)
 -   the **Extract, Transform, Load** script is available in the
-    **global.R** file of this repo
+    **global.R** file of this repo;
+-   for security reasons, I am not able to share the API script as the
+    token also gives the option to change/remove the profile data; the
+    raw data however, is stored in the **raw data** folder of this repo
+    (not having the API call in simply just means that it won’t be up to
+    date for the current year)
 
 **Disclaimer**: I am not affiliated with Toggl. I started using it a few
 years ago because it provided all the functionality I needed and loved
 its minimalistic design. The standard membership, which I use, is free
 of charge.
+
+**Credits**
+
+-   dashboard logo design -
+    [eight.seconds](https://brandsawesome.com/project/play-piano-logo-concept/)
+-   inspiration for the design of the prediction tab within the app -
+    [Claudia
+    Cartaya](https://towardsdatascience.com/how-to-use-r-shiny-for-eda-and-prediction-72e6ef842240)
 
 # Limitations
 
@@ -143,7 +156,7 @@ of charge.
 
 # Extended analysis
 
-Full project available:
+Full project available
 
 -   at the following
     [link](https://htmlpreview.github.io/?https://github.com/peterhontaru/Piano-Practice-Prediction/blob/master/EDA-and-modelling.html),
@@ -152,9 +165,11 @@ Full project available:
     recommend previewing it at the link above since it was originally
     designed as a HTML document)
 
-# Interactive application: (IN PROGRESS)
+# Interactive application
 
 -   you can find an interactive display of this presentation, as well as
     the model in production at the [following
-    link](https://peterhontaru.shinyapps.io/piano-practice-prediction/)
--   <https://peterhontaru.shinyapps.io/piano-practice-prediction/>
+    link](https://peterhontaru.shinyapps.io/Piano-Journal/)
+-   <https://peterhontaru.shinyapps.io/Piano-Journal/>
+
+![Screenshot](www/screenshot.png)

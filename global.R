@@ -1,14 +1,15 @@
-# Import libraries ----------------------------------------------------------
+# Import libraries
 library(data.table)
 library(lubridate)
 library(plotly)
 library(ggthemes)
-library(hrbrthemes)
 library(ggrepel)
 library(ggsci)
+library(DT)
 library(gganimate)
 library(tidyverse)
 library(zoo)
+library(ggfortify)
 library(kableExtra)
 library(car) # leveneTest
 library(rstatix) # t_test
@@ -20,15 +21,34 @@ library(shinyBS) # pop-over KPIs
 library(shinydashboard)
 library(shinyWidgets)
 library(randomForest)
+library(dashboardthemes)
+# library(thematic)
+# library(bslib)
+# library(shinyLP)
+# library(shinyJS)
 
-# import all files that start with 20 and have 4 characters (unsure if I will be practicing from year 2100 onward)
+# load historical data - import all files that start with "20" and have 4 characters (unsure if I will be practicing from year 2100 onwards)
 raw_data <- list.files(pattern = "^20..", recursive = TRUE)%>%
   lapply(read_csv)%>%
-  bind_rows()
+  bind_rows()%>%
+  # change the format so that it matches the API data for join purposes
+  mutate(`Start date` = as_date(`Start date`, format = "%d/%m/%Y"),
+         `End date` = as_date(`End date`, format = "%d/%m/%Y"),
+         Duration = as.numeric(sub(":.*", "", Duration)))
 
-# R doesn't have an innate not in function
+# refresh the current year data (if the api.R file is available)
+## if the API.R script is not available (to preserve the confidentiality of the account), ensure the source command below is commented out
+## not running the script file will still allow for the analysis to work, as well as the shiny dashboard (up to whenever the .csv file was last refreshed by me through the API)
+#source("api.R")
+
+# combine historical + current year (API) data
+raw_data <- raw_data%>%
+  rbind(read_csv("raw data/current_year.csv")%>%select(-1))
+
+# R doesn't have an innate not in function; we need that here
 `%notin%` <- Negate(`%in%`)
 
+# load and transform data
 raw_data <- raw_data%>%
   # remove unnecessary columns and rename some to make the syntax easier to use
   select(-User, -Email, -Billable, -`Amount ()`, -Description, -Task, -Tags)%>%
@@ -38,9 +58,7 @@ raw_data <- raw_data%>%
          Time_Start = `Start time`,
          Time_End = `End time`)%>%
   # restructure the columns/add new ones
-  mutate(Date_Start = as_date(Date_Start, format = "%d/%m/%Y"),
-         Date_End = as_date(Date_End, format = "%d/%m/%Y"),
-         # understand if the data was estimated or tracked
+  mutate(# understand if the data was estimated or tracked
          Source = ifelse(Date_Start < as.Date("2018/11/01"), "Estimated", "Tracked"),
          # extract piece related variables
          Project = as.factor(ifelse(is.na(Project), "General", Project)),
@@ -49,7 +67,6 @@ raw_data <- raw_data%>%
          Genre = as.factor(ifelse(is.na(Genre), "Not applicable", Genre)),
          Composer = word(Project, 1, sep = "\\-"),
          Composer = as.factor(ifelse(Project %in% c("General", "Sightreading", "Technique"), "Not applicable", Composer)),
-         Duration = as.numeric(sub(":.*", "", Duration)),
          # date features
          Week_Start = floor_date(as.Date(Date_Start, "%d/%m/%Y"), unit="week")+1,
          Month = as.factor(month(Date_Start)),
@@ -77,7 +94,7 @@ max_break <- raw_data%>%
             Max_Break = ifelse(is.infinite(Max_Break), 0, Max_Break))
 
 # pulls some features not stored within the app
-table_existing_info <- read_csv("table_outline.csv")%>%
+table_existing_info <- read_csv("raw data/table_outline.csv")%>%
   mutate(Project = as.factor(Project),
          Standard = as.factor(Standard),
          ABRSM = as.factor(ABRSM))
@@ -98,8 +115,9 @@ model_data <- raw_data%>%
                                   ifelse(ABRSM %in% c(5,6), "Intermediate", 
                                          ifelse(ABRSM %in% c(7,8), "Advanced", "Not available")))),
          Standard = as.factor(Standard),
-         ABRSM = fct_relevel(ABRSM, levels = c("1", "2", "3", "4", "5", "6", "7", "8")),
-         Level = fct_relevel(Level, levels = c("Beginner", "Intermediate", "Advanced")),
+         ABRSM = factor(ABRSM, levels = c("1", "2", "3", "4", "5", "6", "7", "8")),
+         Level = factor(Level, levels = c("Beginner", "Intermediate", "Advanced")),
+         Link = ifelse(Link != "no", paste0("<a href='", Link,"' target='_blank'>", Project,"</a>"), Project),
          Length = Length/60)%>%
   inner_join(Practice_by_Date, by = "Date_Start")%>%
   inner_join(max_break, by = "Project")%>%
@@ -110,8 +128,5 @@ table_missing_info <- model_data%>%
   distinct(Project)%>%
   anti_join(table_existing_info, by = "Project")
 
-# they will then be saved into our "alert" file for review
-write_csv(table_missing_info, "table_missing_info.csv")
-
-# connect to their API
-# https://support.toggl.com/en/articles/2559637-do-you-have-an-api-available
+# they will then be saved into our "alert" file for review (I would then need to add these into the table_outline.csv file)
+write_csv(table_missing_info, "raw data/table_missing_info.csv")

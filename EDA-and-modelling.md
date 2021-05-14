@@ -45,16 +45,17 @@ I started playing the piano in 2018 as a complete beginner and I've been trackin
 Here's an example of a recent performance - I mainly play classical music but cannot help but love Elton John's music.
 
 <div align="center">
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/eTJiT6TXIcw" frameborder="0" data-external="1" allowfullscreen>
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/3fhhBZyFCzM" frameborder="0" data-external="1" allowfullscreen>
    </iframe>
 </div>
 
 ## Data collection {-}
 
--   imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18) and on Excel spreadsheet for Nov '18
--   everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
--   time spent in piano lessons was not tracked/included (usually 2-3 hours total per month)
--   the **Extract, Transform, Load** script is available in the **global.R** file of this repo
+- imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18) and on Excel spreadsheet for Nov '18
+- everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
+- time spent in piano lessons was not tracked/included (usually 2-3 hours total per month)
+- the **Extract, Transform, Load** script is available in the **global.R** file of this repo;
+- for security reasons, I am not able to share the API script as the token also gives the option to change/remove the profile data; the raw data however, is stored in the **raw data** folder of this repo (not having the API call in simply just means that it won't be up to date for the current year)
 
 **Disclaimer**: I am not affiliated with Toggl. I started using it a few years ago because it provided all the functionality I needed and loved its minimalistic design. The standard membership, which I use, is free of charge.
 
@@ -65,9 +66,9 @@ Here's an example of a recent performance - I mainly play classical music but ca
 * identified various trends in my practice habits
 * pieces could take me anywhere from ~4 hours to 40+ hours of practice, subject to difficulty (as assessed by the ABRSM grade)
 * the **Random Forest** model was shown to be the most optimal model *(bootstrap resampling, 25x)*
-    -   **Rsquared** - 0.59
-    -   **MAE** - 5.9 hours
-    -   **RMSE** - 7.5 hours
+    -   **Rsquared** - 0.57
+    -   **MAE** - 6.0 hours
+    -   **RMSE** - 7.6 hours
 * looking at the variability of errors, there is a tendency to over-predict for pieces that took very little time to learn and under-predict for the more difficult ones. There could be two main reasons for this:
   -   artificially inflating the number of hours spent on a piece by returning to it a second time (due to a recital performance, wanting to improve the interpretation further or simply just liking it enough to play it again)
   -   learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
@@ -81,19 +82,19 @@ Here's an example of a recent performance - I mainly play classical music but ca
 
 ## Piano practice timeline
 
-<img src="figs/unnamed-chunk-3-1.png" width="100%" />
+<img src="figures/unnamed-chunk-3-1.png" width="100%" />
 
 ## How long did I practice per piece?
 
 Based on the level at the time and the difficulty of the piece, we can see that each piece took around 10-30 hours of practice.
 
-<img src="figs/timeline-1.gif" width="100%" />
+<img src="figures/timeline-1.gif" width="100%" />
 
 ## How consistent was my practice?
 
 Generally, I've done pretty well to maintain a high level of consistency with the exception of August/December. This is usually where I tend to be away from home on annual leave, and thus, not have access to a piano.
 
-<img src="figs/unnamed-chunk-4-1.png" width="100%" />
+<img src="figures/unnamed-chunk-4-1.png" width="100%" />
 
 ## Was there a trend in my amount of daily average practice? {.tabset .tabset-fade .tabset-pills}
 
@@ -103,13 +104,13 @@ We can see that my practice time was correlated with the consistency, where the 
 
 ### overall {-}
 
-<img src="figs/unnamed-chunk-5-1.png" width="100%" />
+<img src="figures/unnamed-chunk-5-1.png" width="100%" />
 
 ### Year on Year {-}
 
 Similar trends as before are apparent where my average daily session is longer before the exams than during any other time in the year and a dip in the months where I usually take most of my annual leave. I really do need to start picking up the pace and get back to where I used to be.
 
-<img src="figs/unnamed-chunk-6-1.png" width="100%" />
+<img src="figures/unnamed-chunk-6-1.png" width="100%" />
 
 ## Did COVID significantly impact my practice time? {.tabset .tabset-fade .tabset-pills}
 
@@ -117,7 +118,7 @@ Similar trends as before are apparent where my average daily session is longer b
 
 Despite a similar median, we can see that the practice sessions were less likely to be over 80 min after COVID. We can test if this was a significant impact with a t-test.
 
-<img src="figs/unnamed-chunk-7-1.png" width="100%" />
+<img src="figures/unnamed-chunk-7-1.png" width="100%" />
 
 ### skewness assumption {-}
 
@@ -136,8 +137,8 @@ Given the extremely low p-value, the Shapiro-Wilk normality test implies that th
 <tbody>
   <tr>
    <td style="text-align:left;"> After COVID </td>
-   <td style="text-align:right;"> 0.9607325 </td>
-   <td style="text-align:right;"> 3e-07 </td>
+   <td style="text-align:right;"> 0.9589908 </td>
+   <td style="text-align:right;"> 1e-07 </td>
    <td style="text-align:left;"> Shapiro-Wilk normality test </td>
   </tr>
   <tr>
@@ -165,10 +166,10 @@ We can see that with a large p value, we should fail to reject the null hypothes
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 0.0410026 </td>
-   <td style="text-align:right;"> 0.8395891 </td>
+   <td style="text-align:right;"> 0.0293711 </td>
+   <td style="text-align:right;"> 0.8639715 </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 732 </td>
+   <td style="text-align:right;"> 746 </td>
   </tr>
 </tbody>
 </table>
@@ -197,10 +198,10 @@ My practice sessions post-COVID are significantly shorter than those before the 
    <td style="text-align:left;"> Before COVID </td>
    <td style="text-align:left;"> After COVID </td>
    <td style="text-align:right;"> 433 </td>
-   <td style="text-align:right;"> 301 </td>
-   <td style="text-align:right;"> 3.319481 </td>
-   <td style="text-align:right;"> 732 </td>
-   <td style="text-align:right;"> 0.000947 </td>
+   <td style="text-align:right;"> 315 </td>
+   <td style="text-align:right;"> 3.892883 </td>
+   <td style="text-align:right;"> 746 </td>
+   <td style="text-align:right;"> 0.000108 </td>
    <td style="text-align:left;"> *** </td>
   </tr>
 </tbody>
@@ -210,15 +211,15 @@ My practice sessions post-COVID are significantly shorter than those before the 
 
 ### by genre {-}
 
-<img src="figs/unnamed-chunk-11-1.png" width="100%" />
+<img src="figures/unnamed-chunk-11-1.png" width="100%" />
 
 ### by composer {-}
 
-<img src="figs/unnamed-chunk-12-1.png" width="100%" />
+<img src="figures/unnamed-chunk-12-1.png" width="100%" />
 
 ### by piece {-}
 
-<img src="figs/unnamed-chunk-13-1.png" width="100%" />
+<img src="figures/unnamed-chunk-13-1.png" width="100%" />
 
 ## Relation between difficulty and number of practice hours {.tabset .tabset-fade .tabset-pills}
 
@@ -228,7 +229,7 @@ Simplified, ABRSM grades are a group of 8 exams based on their difficulty (1 - b
 
 More information can be found on their official website at https://gb.abrsm.org/en/exam-support/your-guide-to-abrsm-exams/
 
-<img src="figs/unnamed-chunk-14-1.png" width="100%" />
+<img src="figures/unnamed-chunk-14-1.png" width="100%" />
 
 ### level {-}
 
@@ -237,17 +238,17 @@ A further aggregation of ABRSM grades; this is helpful given the very limited da
   * 5-6: Intermediate
   * 7-8: Advanced
 
-<img src="figs/unnamed-chunk-15-1.png" width="100%" />
+<img src="figures/unnamed-chunk-15-1.png" width="100%" />
 
 ## What about the piece length?
 
-<img src="figs/unnamed-chunk-16-1.png" width="100%" />
+<img src="figures/unnamed-chunk-16-1.png" width="100%" />
 
 ## Learning effect - do pieces of the same difficulty become easier to learn with time?
 
 We can spot a trend where the time required to learn a piece of a similar difficulty (ABRSM Grade) decreases as my ability to play the piano increases (as judged by cumulative hours of practice). We should keep this in mind and include it as a variable into our prediction model.
 
-<img src="figs/unnamed-chunk-17-1.png" width="100%" />
+<img src="figures/unnamed-chunk-17-1.png" width="100%" />
 
 ## Does "pausing" a piece impact the total time required to learn it?
 
@@ -255,7 +256,7 @@ How do we differentiate between pieces that we learn once and those that we come
 
 As anyone that ever played the piano knows, re-learning a piece, particularly after you "drop" it for a few months/years, results in a much better performance/understanding of the piece. I definitely found that to be true in my experience, particularly with my exam pieces.The downside is that these pieces take longer to learn.
 
-<img src="figs/unnamed-chunk-18-1.png" width="100%" />
+<img src="figures/unnamed-chunk-18-1.png" width="100%" />
 
 ## Repertoire
 
@@ -277,23 +278,35 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Elton John - Rocket man </td>
-   <td style="text-align:right;font-weight: bold;color: red !important;"> 47 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Marche 127 </td>
+   <td style="text-align:right;font-weight: bold;color: red !important;"> 8 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.2 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1200 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> 4 </td>
+   <td style="text-align:left;"> Beginner </td>
+   <td style="text-align:left;"> 2021-02-23 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=3fhhBZyFCzM" target="_blank">Elton John - Rocket man</a> </td>
+   <td style="text-align:right;font-weight: bold;color: red !important;"> 48 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Modern </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 4.0 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 1130 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Yes </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 7 </td>
    <td style="text-align:left;"> Advanced </td>
    <td style="text-align:left;"> 2020-12-08 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Schumann - Träumerei </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=saHo-pDjp2A" target="_blank">Schumann - Träumerei</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 14 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 3.0 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 1087 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 7 </td>
@@ -305,7 +318,7 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:right;font-weight: bold;color: red !important;"> 28 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Classical </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 3.3 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 1081 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Yes </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 6 </td>
@@ -313,10 +326,10 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-11-05 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Ibert - Sérénade sur l’eau </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=4_DyAzPXfvw" target="_blank">Ibert - Sérénade sur l’eau</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 10 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Modern </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.7 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.8 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 1038 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
@@ -325,11 +338,11 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-09-24 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Kuhlau - Rondo Vivace </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=xVkBpSVfV7Y" target="_blank">Kuhlau - Rondo Vivace</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 24 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Classical </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 2.2 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 1014 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 6 </td>
@@ -337,7 +350,7 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-08-03 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> C. Hartmann - The little ballerina </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=CNL9Cibhra4" target="_blank">C. Hartmann - The little ballerina</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 21 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
@@ -352,8 +365,8 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;font-weight: bold;color: black !important;"> Schumann - Lalling Melody </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 5 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.3 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.5 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 981 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 1 </td>
@@ -361,11 +374,11 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-06-28 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Schumann - Melody </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=gVrFu3CvvLw" target="_blank">Schumann - Melody</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 4 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.0 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.1 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 972 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 1 </td>
@@ -373,7 +386,7 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-06-20 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Clementi - Sonatina no 3 - Mov 2 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=kz_xYj9YmMI" target="_blank">Clementi - Sonatina no 3 - Mov 2</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 3 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Classical </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 1.0 </td>
@@ -385,10 +398,10 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-06-04 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Clementi - Sonatina no 3 - Mov 3 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=e9F4OFqknSs" target="_blank">Clementi - Sonatina no 3 - Mov 3</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 20 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Classical </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.1 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 952 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
@@ -397,7 +410,7 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-06-04 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Chopin - Waltz in Fm </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=BT5BlqMKNTU" target="_blank">Chopin - Waltz in Fm</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 27 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
@@ -409,10 +422,10 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-04-18 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Clementi - Sonatina no 3 - Mov 1 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=sHFxSDUR5P4" target="_blank">Clementi - Sonatina no 3 - Mov 1</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 30 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Classical </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.7 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.5 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 877 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
@@ -421,11 +434,11 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-04-07 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Schumann - Kinderszenen 1 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=wID0YkzaeQc" target="_blank">Schumann - Kinderszenen 1</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 10 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 855 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 5 </td>
@@ -433,11 +446,11 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-03-25 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Prelude in G from Cello Suite No 1 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=mPf9pXWkH04" target="_blank">Bach - Prelude in G from Cello Suite No 1</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 25 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 2.5 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 788 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 5 </td>
@@ -445,22 +458,22 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-02-04 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Georg Böhm - Minuet in G </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=fM0qSYId7FM" target="_blank">Georg Böhm - Minuet in G</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 7 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.0 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 0.8 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 780 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Yes </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> 1 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> 2 </td>
    <td style="text-align:left;"> Beginner </td>
    <td style="text-align:left;"> 2020-01-27 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Invention 4 in Dm </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=OMA9KnxuoSg" target="_blank">Bach - Invention 4 in Dm</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 21 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.7 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.5 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 777 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
@@ -469,7 +482,7 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-01-25 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Chopin - Contredanse in Gb </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=IyxUJuKn48s" target="_blank">Chopin - Contredanse in Gb</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 23 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 2.2 </td>
@@ -481,23 +494,23 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2020-01-16 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Minuet in Gm - 115 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=9fNanix5B24" target="_blank">Bach - Minuet in Gm - 115</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 7 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 1.3 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 750 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> 1 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> 2 </td>
    <td style="text-align:left;"> Beginner </td>
    <td style="text-align:left;"> 2020-01-07 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Minuet in G - 114 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=yO-sx_IoUzQ" target="_blank">Bach - Minuet in G - 114</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 4 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.5 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 726 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 1 </td>
@@ -505,10 +518,10 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2019-12-06 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Elton John - Your song (Arr Cornick) </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=qhf3vcjb6dE" target="_blank">Elton John - Your song (Arr Cornick)</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 36 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Modern </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 3.3 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 3.2 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 713 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
@@ -517,10 +530,10 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2019-11-21 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Poulenc - Valse Tyrolienne </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=M1AXbX0DPl0" target="_blank">Poulenc - Valse Tyrolienne</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 17 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Modern </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.7 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.5 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 562 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
@@ -529,10 +542,10 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2019-09-02 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Prelude in Cm - 934 </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=gYPky_fJ-kY" target="_blank">Bach - Prelude in Cm - 934</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 25 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.4 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.6 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 536 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
@@ -541,23 +554,23 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2019-08-15 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Schumann - Volksliedchen </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=SwBf-f7A8rM" target="_blank">Schumann - Volksliedchen</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 10 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.8 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 501 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> No </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> 2 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> 3 </td>
    <td style="text-align:left;"> Beginner </td>
    <td style="text-align:left;"> 2019-07-01 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Haydn - Andante in A </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=PNeUXz5UQMo" target="_blank">Haydn - Andante in A</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 39 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Classical </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 2.8 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 468 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Yes </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> 5 </td>
@@ -565,7 +578,7 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2019-06-08 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Schumann - Remembrance </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=Iv7L0cMpIqg" target="_blank">Schumann - Remembrance</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 34 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 2.2 </td>
@@ -580,19 +593,19 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Minuet in G - 116 </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 8 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.0 </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> Average </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.8 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> Casual </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 361 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Yes </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> 1 </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> 3 </td>
    <td style="text-align:left;"> Beginner </td>
    <td style="text-align:left;"> 2019-03-04 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Bach - Invention 1 in C </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=Lh-3bkEZCwc" target="_blank">Bach - Invention 1 in C</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 27 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Baroque </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.7 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 1.5 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 350 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Yes </td>
@@ -601,15 +614,15 @@ As anyone that ever played the piano knows, re-learning a piece, particularly af
    <td style="text-align:left;"> 2019-02-22 </td>
   </tr>
   <tr>
-   <td style="text-align:left;font-weight: bold;color: black !important;"> Chopin - Waltz in Am </td>
+   <td style="text-align:left;font-weight: bold;color: black !important;"> <a href="https://www.youtube.com/watch?v=92_jiShhN5w" target="_blank">Chopin - Waltz in Am</a> </td>
    <td style="text-align:right;font-weight: bold;color: red !important;"> 26 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Romantic </td>
-   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.5 </td>
+   <td style="text-align:right;font-weight: bold;color: green !important;"> 2.6 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Performance </td>
    <td style="text-align:right;font-weight: bold;color: green !important;"> 305 </td>
    <td style="text-align:left;font-weight: bold;color: green !important;"> Yes </td>
-   <td style="text-align:left;font-weight: bold;color: green !important;"> 4 </td>
-   <td style="text-align:left;"> Beginner </td>
+   <td style="text-align:left;font-weight: bold;color: green !important;"> 5 </td>
+   <td style="text-align:left;"> Intermediate </td>
    <td style="text-align:left;"> 2019-01-07 </td>
   </tr>
 </tbody>
@@ -621,9 +634,13 @@ Question: **Can we predict how long it would take to learn a piano piece based o
 
 ## outliers
 
-Given the very limited data at the advanced level (Grade 7 ABRSM), those two pieces will be removed. One is an extreme outlier as well which will significantly impact our models.
+We can see that there are some outliers in our dataset:
 
+* no. 16 and no. 28 are two Advanced (Grade 7 pieces). These are the only two pieces within this category and will be removed as they are both outliers; they will be introduced as I learn more Advanced repertoire (it is also likely that no. 16 is significantly harder than grade 7, but it is a custom arrangement and cannot be assigned a specific grade)
+* no. 14 is an extremely short movement of a piece (a few seconds long) that unites the first and third movement of the same piece and it took very little time to learn
+* no 4 is a piece that I previously learnt but did not track the time spent on a piece (as I wasn't tracking individual times back then). It then took significantly less time to re-learn it
 
+<img src="figures/unnamed-chunk-20-1.png" width="100%" />
 
 ## missing values
 
@@ -640,6 +657,15 @@ There are no missing values in the modelling dataset following the ETL process.
   * **Experience**: total hours practiced before the first practice session on each piece
   * **Length** of the piece: minutes
 
+## near zero variance
+
+We can see that the *Break* feature has low variance (a high ratio of the most common answer "No" to the second most common "Yes"). We can exclude this from the model.
+
+
+```
+## [1] "Break"
+```
+
 ## pre-processing
 
 Let's use some basic standardisation offered by the caret package such as **centering** (subtract mean from values) and **scaling** (divide values by standard deviation).
@@ -648,7 +674,7 @@ Let's use some basic standardisation offered by the caret package such as **cent
 
 ## resampling
 
-Given the small size of the dataset, bootstrapping resampling method will be applied.
+Given the small size of the dataset, bootstrapping resampling method will be applied. This will give multiple estimates of out-of-sample error, rather than a single estimate.
 
 
 
@@ -662,6 +688,8 @@ We chose the Random Forest model as it was the best performing model. It is know
 * good for non-linearity
 * however, variable importance can be biased if categorical variables have few levels (toward high levels) or are correlated
 
+The model selected had the mtry parameter (number of randomly selected variables used at each split) equal to 6.
+
 
 ```
 ## 
@@ -673,33 +701,33 @@ We chose the Random Forest model as it was the best performing model. It is know
 ## 
 ## MAE 
 ##               Min.  1st Qu.   Median     Mean  3rd Qu.      Max. NA's
-## ranger    3.216848 4.546412 5.226721 5.350732 6.185954  8.074644    0
-## lmStepAIC 4.059373 6.035128 6.625829 7.373961 8.656703 12.293508    0
-## lm        3.457466 6.104998 6.831580 7.407868 8.107952 16.638647    0
-## ridge     3.514506 5.195608 5.904643 5.936369 7.002558  7.751690   10
-## rf        2.867137 5.123509 5.592698 5.959335 6.989707  8.722035    0
-## gbm       4.593238 6.146348 6.951988 7.261349 8.076775 16.990824    0
-## pls       4.460543 5.041959 5.930350 5.848360 6.295627  7.970644    0
+## ranger    2.419997 4.080959 5.196473 5.123377 6.077655  8.195117    0
+## lmStepAIC 3.968242 6.687709 7.781494 8.072575 8.813780 20.205612    0
+## lm        4.418096 6.524852 7.964707 8.557616 9.539582 18.349102    0
+## ridge     3.307420 4.515884 5.699746 5.569833 6.399087  8.408524    6
+## rf        3.205740 5.118807 5.932867 6.038378 6.666790  9.904368    0
+## gbm       4.089667 6.355343 7.168571 7.662897 9.228424 12.431810    0
+## pls       3.483062 3.983705 4.621237 4.774614 5.353614  6.982680    0
 ## 
 ## RMSE 
-##               Min.  1st Qu.   Median     Mean   3rd Qu.      Max. NA's
-## ranger    4.531594 5.821475 6.907062 6.876131  7.614550 10.521156    0
-## lmStepAIC 4.678084 7.290730 8.706652 9.067898 10.179064 15.976038    0
-## lm        3.979872 8.065115 8.705383 9.404728 10.412562 19.451739    0
-## ridge     4.989087 6.206758 6.862180 7.045983  7.854493  8.687658   10
-## rf        3.394308 6.640020 7.115649 7.546307  8.461888 11.065527    0
-## gbm       5.906910 7.466537 8.041088 8.843606  8.994092 21.377506    0
-## pls       5.322380 6.303446 7.096138 7.043631  7.345444  9.624458    0
+##               Min.  1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+## ranger    3.068576 5.072204  6.300954  6.309951  7.265692  9.490835    0
+## lmStepAIC 4.733275 7.863627 10.469526 10.245300 10.969664 24.911850    0
+## lm        4.814727 7.559685 10.062189 10.764801 12.000870 23.377924    0
+## ridge     4.085891 5.456852  6.509323  6.710812  7.824420 10.594639    6
+## rf        4.064252 6.520044  7.170733  7.281298  8.102163 12.275178    0
+## gbm       4.748131 7.952227  8.436318  9.455613 12.101037 16.468413    0
+## pls       4.118035 5.008394  5.609687  5.704572  6.350988  7.854617    0
 ## 
 ## Rsquared 
 ##                   Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
-## ranger    0.2598148174 0.5915672 0.6861549 0.6395133 0.7899287 0.8801139    0
-## lmStepAIC 0.0005882529 0.4001020 0.5735153 0.5051570 0.6597403 0.8997367    0
-## lm        0.0019980780 0.2879700 0.5871362 0.4965277 0.6363397 0.8958706    0
-## ridge     0.3743315404 0.6559275 0.6807293 0.6828744 0.7764227 0.8621330   10
-## rf        0.1341300382 0.5248279 0.6068158 0.5858350 0.7012294 0.8842650    0
-## gbm       0.0669333944 0.3848695 0.5685371 0.5338006 0.6661362 0.8728232    0
-## pls       0.3579501758 0.6342263 0.6727956 0.6723318 0.7638235 0.8898141    0
+## ranger    0.0281671341 0.5739776 0.6517399 0.6225855 0.7995505 0.9432270    0
+## lmStepAIC 0.1525972285 0.3153611 0.4496154 0.4768795 0.6350944 0.9211133    0
+## lm        0.0131385156 0.1889992 0.4552897 0.4218550 0.6417713 0.8298442    0
+## ridge     0.2034848134 0.5639332 0.6313464 0.6250199 0.7636798 0.8591136    6
+## rf        0.0635134558 0.4669159 0.5633518 0.5693602 0.7458371 0.8831978    0
+## gbm       0.0003225047 0.1205368 0.4806110 0.4128403 0.6792372 0.8289043    0
+## pls       0.2550967916 0.6282707 0.7328504 0.7041134 0.8232193 0.9018937    0
 ```
 
 ## model evaluation
@@ -716,55 +744,55 @@ Based on our regression model, it does not look like we have significant multico
  </thead>
 <tbody>
   <tr>
+   <td style="text-align:left;"> ABRSM5 </td>
+   <td style="text-align:right;"> 9.6 </td>
+  </tr>
+  <tr>
    <td style="text-align:left;"> ABRSM6 </td>
-   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 5.7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Cumulative_Duration </td>
-   <td style="text-align:right;"> 3.9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ABRSM5 </td>
-   <td style="text-align:right;"> 3.5 </td>
+   <td style="text-align:right;"> 5.2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ABRSM4 </td>
-   <td style="text-align:right;"> 3.4 </td>
+   <td style="text-align:right;"> 4.8 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> GenreClassical </td>
-   <td style="text-align:right;"> 2.5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Length </td>
-   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:left;"> ABRSM3 </td>
+   <td style="text-align:right;"> 4.5 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> StandardPerformance </td>
-   <td style="text-align:right;"> 2.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> BreakNo </td>
-   <td style="text-align:right;"> 2.1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> GenreRomantic </td>
-   <td style="text-align:right;"> 1.9 </td>
+   <td style="text-align:right;"> 3.3 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ABRSM2 </td>
-   <td style="text-align:right;"> 1.7 </td>
+   <td style="text-align:right;"> 3.1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GenreClassical </td>
+   <td style="text-align:right;"> 3.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GenreRomantic </td>
+   <td style="text-align:right;"> 2.3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Length </td>
+   <td style="text-align:right;"> 2.2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> GenreModern </td>
-   <td style="text-align:right;"> 1.7 </td>
+   <td style="text-align:right;"> 1.6 </td>
   </tr>
 </tbody>
 </table>
 
 ### actuals vs predictions
 
-<img src="figs/unnamed-chunk-26-1.png" width="100%" />
+<img src="figures/unnamed-chunk-27-1.png" width="100%" />
 
 ### residual distribution {.tabset .tabset-fade .tabset-pills}
 
@@ -772,19 +800,19 @@ Based on our regression model, it does not look like we have significant multico
 
 We can see that the residuals are mostly situated around 0.
 
-<img src="figs/unnamed-chunk-27-1.png" width="100%" />
+<img src="figures/unnamed-chunk-28-1.png" width="100%" />
 
 #### QQ plot / normal probability plot of residuals {-}
 
-Similar to the previous histogram, we can spot some deviations from the normal distribution.
+Similar to the previous histogram, we can spot some deviations from the normal distribution. Overall, we can state that the residuals follow a normal distribution.
 
-<img src="figs/unnamed-chunk-28-1.png" width="100%" />
+<img src="figures/unnamed-chunk-29-1.png" width="100%" />
 
 ### independence of residuals (and hence observations)
 
 There seems to be a slight trend where newer pieces have a smaller residuals. This could mean a lack of independence from the order of data collection (the model predictions are based on my current level of playing).
 
-<img src="figs/unnamed-chunk-29-1.png" width="100%" />
+<img src="figures/unnamed-chunk-30-1.png" width="100%" />
 
 ### actuals versus residuals
 
@@ -793,14 +821,14 @@ Looking at the variability of errors, there is still a tendency to over-predict 
   -   artificially inflating the number of hours spent on a piece by returning to it a second time (due to a recital performance, wanting to improve the interpretation further or simply just liking it enough to play it again)
   -   learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
 
-<img src="figs/unnamed-chunk-30-1.png" width="100%" />
+<img src="figures/unnamed-chunk-31-1.png" width="100%" />
 
 ## Linear Regression (LR) or Random Forest (RF)?
 
 We can see that the Random Forest performed significantly better than the simpler Linear Regression model. This isn't surprising since there might be non-linear trends within the data, and RFs are known to be more accurate (at the cost of interpretability and computing power).
 
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
-<caption>Model 1 vs model 2</caption>
+<caption>Random Forest vs Linear Regression</caption>
  <thead>
   <tr>
    <th style="text-align:right;"> estimate </th>
@@ -815,12 +843,12 @@ We can see that the Random Forest performed significantly better than the simple
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:right;"> 1.858421 </td>
-   <td style="text-align:right;"> 3.01994 </td>
-   <td style="text-align:right;"> 0.0059183 </td>
+   <td style="text-align:right;"> 3.483503 </td>
+   <td style="text-align:right;"> 3.988638 </td>
+   <td style="text-align:right;"> 0.0005423 </td>
    <td style="text-align:right;"> 24 </td>
-   <td style="text-align:right;"> 0.5883319 </td>
-   <td style="text-align:right;"> 3.12851 </td>
+   <td style="text-align:right;"> 1.680984 </td>
+   <td style="text-align:right;"> 5.286022 </td>
    <td style="text-align:left;"> One Sample t-test </td>
    <td style="text-align:left;"> two.sided </td>
   </tr>
@@ -829,13 +857,13 @@ We can see that the Random Forest performed significantly better than the simple
 
 ## How many predictors did the most optimal model have?
 
-<img src="figs/predictors-1.png" width="100%" />
+<img src="figures/predictors-1.png" width="100%" />
 
 ## What were the most important variables?
 
 The most important variables were shown to be the **length of the piece**, **standard of playing**(performance vs casual) and **experience**(lifetime total practice before first practice session on each piece)
 
-<img src="figs/factors-1.png" width="100%" />
+<img src="figures/factors-1.png" width="100%" />
 
 # Limitations
 
@@ -850,22 +878,19 @@ The most important variables were shown to be the **length of the piece**, **sta
 
 -   keep practicing, gather more data and refresh this analysis + adjust the model
 -   add a recommender tab to the shiny dashboard to recommend pieces based on specific features
--   connect to the Toggl API for live updates
 
 # Hardest things about this analysis:
 
-* the Extract-Transform-Load process - cleaning the "dirty data" and finding creative ways to input the data on the front-end of the app in order to make it reporting friendly on the back-end
+* the Extract-Transform-Load process - cleaning the "dirty data" and finding creative ways to input the data on the front-end of the app in order to make it reporting-friendly on the back-end
   * especially true for metadata such as Genre, Type of practice, Composer and Piece name, tag pieces as "work in progress", etc
 * automate ways to differentiate between pieces that I came back to vs pieces I only studied once (such whether the maximum difference between two consecutive practice sessions exceeded a threshold)
 * work with very limited data
 
-# Interactive application:
+# Interactive application
 
--   you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/piano-practice-prediction/)
--   <https://peterhontaru.shinyapps.io/piano-practice-prediction/>
+-   you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/Piano-Journal/)
+-   <https://peterhontaru.shinyapps.io/Piano-Journal/>
 
-# What's next?
+![Screenshot](www/screenshot.png)
 
--   keep practicing, gather more data and refresh this analysis + adjust the model
--   add a recommender tab to the shiny dashboard to recommend pieces based on specific features
--   connect to the Toggl API for live updates
+

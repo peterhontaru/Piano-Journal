@@ -45,16 +45,17 @@ I started playing the piano in 2018 as a complete beginner and I've been trackin
 Here's an example of a recent performance - I mainly play classical music but cannot help but love Elton John's music.
 
 <div align="center">
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/eTJiT6TXIcw" frameborder="0" data-external="1" allowfullscreen>
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/3fhhBZyFCzM" frameborder="0" data-external="1" allowfullscreen>
    </iframe>
 </div>
 
 ## Data collection {-}
 
--   imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18) and on Excel spreadsheet for Nov '18
--   everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
--   time spent in piano lessons was not tracked/included (usually 2-3 hours total per month)
--   the **Extract, Transform, Load** script is available in the **global.R** file of this repo
+- imputed conservative estimations for the first 10 months of the first year (Jan '18 to Oct '18) and on Excel spreadsheet for Nov '18
+- everything from Dec '18 onwards was tracked using Toggl, a time-tracking app/tool
+- time spent in piano lessons was not tracked/included (usually 2-3 hours total per month)
+- the **Extract, Transform, Load** script is available in the **global.R** file of this repo;
+- for security reasons, I am not able to share the API script as the token also gives the option to change/remove the profile data; the raw data however, is stored in the **raw data** folder of this repo (not having the API call in simply just means that it won't be up to date for the current year)
 
 **Disclaimer**: I am not affiliated with Toggl. I started using it a few years ago because it provided all the functionality I needed and loved its minimalistic design. The standard membership, which I use, is free of charge.
 
@@ -65,9 +66,9 @@ Here's an example of a recent performance - I mainly play classical music but ca
 * identified various trends in my practice habits
 * pieces could take me anywhere from ~4 hours to 40+ hours of practice, subject to difficulty (as assessed by the ABRSM grade)
 * the **Random Forest** model was shown to be the most optimal model *(bootstrap resampling, 25x)*
-    -   **Rsquared** - 0.59
-    -   **MAE** - 5.9 hours
-    -   **RMSE** - 7.5 hours
+    -   **Rsquared** - 0.57
+    -   **MAE** - 6.0 hours
+    -   **RMSE** - 7.6 hours
 * looking at the variability of errors, there is a tendency to over-predict for pieces that took very little time to learn and under-predict for the more difficult ones. There could be two main reasons for this:
   -   artificially inflating the number of hours spent on a piece by returning to it a second time (due to a recital performance, wanting to improve the interpretation further or simply just liking it enough to play it again)
   -   learning easier pieces later on in my journey which means I will learn them faster than expected (based on my earlier data where a piece of a similar difficulty took longer)
@@ -79,7 +80,7 @@ knitr::opts_chunk$set(
     tidy = FALSE, # cleaner code printing
     size = "small", # smaller code
     
-    fig.path = "figs/", #graphics location
+    fig.path = "figures/", #graphics location
     out.width = "100%",
 
     message = FALSE,
@@ -88,7 +89,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r include=FALSE}
-# run the import/clean script
+source("api.R")
 source("global.R")
 ```
 
@@ -98,36 +99,43 @@ source("global.R")
 
 ```{r fig.height=6, fig.width=15}
 raw_data%>%
-  group_by(Month_format)%>%
+  group_by(Month_format, Month_Start)%>%
   summarise(Total_Duration = sum(Duration)/60)%>%
+  ungroup()%>%
   mutate(Total_Duration2 = as.integer(cumsum(Total_Duration)),
+         # period = ifelse(Month_Start < "2018-11-01", "estimated", "tracked"),
          max = as.integer(max(Total_Duration2)),
-         max = ifelse(max > Total_Duration2, "", max))%>%
+         max2 = ifelse(max > Total_Duration2, "", "today"))%>%
 
   ggplot(aes(Month_format, Total_Duration2, group = 1))+
   geom_line(size = 2, color = "#69b3a2")+
   geom_point(size = 5, color = "#69b3a2")+
   geom_area(alpha = 0.3, fill = "#69b3a2")+
+  # tracked vs estimated
+  geom_segment(aes(x = "Nov\n '18", xend = "Nov\n '18", y = 282, yend = 0), lty = "dashed", alpha = 0.5)+
+  geom_text(x="Aug\n '18", y = 202/2,  size = 4, label = "estimated")+
+  geom_text(x="Feb\n '19", y = 202/2,  size = 4, label = "tracked")+
+  # start
+  # geom_point(x="Jan\n '18", y = 25, size = 9, shape = 21, fill = "dark red", col = "black")+
+  # geom_text(x="Jan\n '18", y = 25+100, size = 5, nudge_x = 2, label = "Day 1")+
   # grade 3
-  geom_point(x="Oct\n '18", y = 253, size = 5, color = "dark red")+
+  geom_point(x="Oct\n '18", y = 253, size = 9, shape = 21, fill = "dark red", col = "black")+
   geom_text(x="Oct\n '18", y = 253+200, size = 5, label = "Grade 3")+
   geom_text(x="Oct\n '18", y = 253+100,  size = 5, label = "253 hours")+
   # grade 5
-  geom_point(x="Oct\n '19", y = 675, size = 5, color = "dark red")+
+  geom_point(x="Oct\n '19", y = 675, size = 9, shape = 21, fill = "dark red", col = "black")+
   geom_text(x="Oct\n '19", y = 675+200,  size = 5, label = "Grade 5")+
   geom_text(x="Oct\n '19", y = 675+100,  size = 5, label = "675 hours")+
   # grade 6
-  geom_point(x="Oct\n '20", y = 1078, size = 5, color = "dark red")+
+  geom_point(x="Oct\n '20", y = 1078, size = 9, shape = 21, fill = "dark red", col = "black")+
   geom_text(x="Oct\n '20", y = 1078+200,  size = 5, label = "Grade 6")+
   geom_text(x="Oct\n '20", y = 1078+100,  size = 5, label = "1078 hours")+
   # NOW
-  geom_point(aes(x="Apr\n '21", y = 1219), size = 5, color = "dark red")+
-  geom_text(aes(label = max), nudge_y = 75, nudge_x = -0.5, size = 5)+
-  scale_fill_gradient(low="yellow", high="red")+
+  # geom_point(aes(x="May\n '21", y = as.numeric(max)), size = 9, shape = 21, fill = "dark red", col = "black")+
+  # geom_text(aes(label = max2), nudge_y = 95, nudge_x = -0.5, size = 5)+
   labs(x = NULL,
-       y = "Total hours of practice",
-       title = "Piano practice timeline")+
-  theme_ipsum_es()+
+       y = "Total hours of practice")+
+  theme_minimal()+
   theme(legend.position = "top")
 ```
 
@@ -136,6 +144,9 @@ raw_data%>%
 Based on the level at the time and the difficulty of the piece, we can see that each piece took around 10-30 hours of practice.
 
 ```{r timeline}
+#knitr::opts_chunk$set(fig.path = "figures/animation/")
+
+#timeline_animation <- 
 raw_data%>%
   filter(Date_Start > as.Date("2018/11/01"))%>%
   filter(Completed == "Yes")%>%
@@ -153,10 +164,11 @@ ggplot(aes(Date_Start, Cumulative_Piece, fill = Level)) +
   geom_point(size = 10, shape = 21, col = "black", alpha = 0.5) +
   scale_size(range = c(.1, 16), guide = FALSE) +
   labs(title = 'Year: {frame_time}',
+       x = NULL,
        y = "Total practice time per piece (hours)")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es() +
+  theme_minimal() +
   theme(legend.position = "top")+
   transition_time(Date_Start) +
   ease_aes('linear')+
@@ -164,7 +176,8 @@ ggplot(aes(Date_Start, Cumulative_Piece, fill = Level)) +
   shadow_mark(alpha = 0.1, size = 5)
 
 # save animation as gif for later use
-# anim_save("figs/timeline.gif")
+#animate(timeline_animation, duration = 5, fps = 20, renderer = gifski_renderer())
+#anim_save("timeline_animation.gif", animation = last_animation(), path = "www")
 ```
 
 ## How consistent was my practice?
@@ -174,27 +187,34 @@ Generally, I've done pretty well to maintain a high level of consistency with th
 ```{r fig.height=6, fig.width=15}
 raw_data%>%
   filter(Source != "Estimated")%>%
-  group_by(Month_Year, Month_Start, Month_format)%>%
+  mutate(current_month = as.factor(ifelse(Month_Start == max(Month_Start), "Yes", "No")))%>%
+  group_by(Month_Year, Month_Start, Month_format, current_month)%>%
   summarise(Days_Practice = n_distinct(Date_Start),
-            Total_Duration = sum(Duration, na.rm = TRUE))%>%
-  mutate(Days_Total = days_in_month(Month_Start),
+            Total_Duration = sum(Duration))%>%
+  mutate(Days_Total = ifelse(current_month == "Yes", day(today()), days_in_month(Month_Start)), # account for the fact that the current month is incomplete
          Days_Not_Practiced = Days_Total - Days_Practice,
          Avg_Duration = as.integer(Total_Duration/Days_Total),
          Consistency = round(Days_Practice / Days_Total * 100,2),
-         Consistency_Status = ifelse(Consistency<75, "Bad", "Good"),
+         Consistency_Status = ifelse(Consistency>=75, "Over 75%", "Under 75%"),
+         Consistency_Status = factor(Consistency_Status, levels = c("Under 75%", "Over 75%")),
          Month_format = reorder(Month_format, Month_Year))%>%
+  ungroup()%>%
+  mutate(Average = sum(Days_Practice)/sum(Days_Total)*100)%>%
   
   ggplot(aes(Month_format, Consistency, fill = Consistency_Status))+
+  geom_hline(aes(yintercept = Average), lty = "dashed", alpha = 0.5)+
   geom_col(group = 1, col = "black")+
-  geom_hline(yintercept = 75, lty = "dashed")+
   geom_text(aes(label = Days_Not_Practiced), size = 5, nudge_y = 3)+
+  geom_text(x = "Mar\n '21", aes(y = Average+3),  size = 4, label = "average")+
   labs(x = NULL,
-       fill = "Consistency status",
+       fill = "Consistency status (target 75%)",
        subtitle = "Numbers indicate days without any practice within each month")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()+
-  theme(legend.position = "top")
+  theme_minimal()+
+  theme(legend.position = "top",
+        axis.title.y = element_text(size =15),
+        text = element_text(size=15))
 ```
 
 ## Was there a trend in my amount of daily average practice? {.tabset .tabset-fade .tabset-pills}
@@ -208,24 +228,31 @@ We can see that my practice time was correlated with the consistency, where the 
 ```{r fig.height=6, fig.width=15}
 raw_data%>%
   filter(Source != "Estimated")%>%
-  group_by(Month_Year, Month_Start, Month_format)%>%
+  mutate(current_month = as.factor(ifelse(Month_Start == max(Month_Start), "Yes", "No")))%>%
+  group_by(Month_Year, Month_Start, Month_format, current_month)%>%
   summarise(Days_Practice = n_distinct(Date_Start),
             Total_Duration = sum(Duration))%>%
-  mutate(Days_Total = days_in_month(Month_Start),
+  mutate(Days_Total = ifelse(current_month == "Yes", day(today()), days_in_month(Month_Start)), # account for the fact that the current month is incomplete
          Avg_Duration = as.integer(Total_Duration/Days_Total),
          Avg_Duration_Status = ifelse(Avg_Duration < 60, "Less than one hour", "One hour"),
          Month_format = reorder(Month_format, Month_Year))%>%
+  ungroup()%>%
+  mutate(Average = sum(Total_Duration)/sum(Days_Total))%>%
   
   ggplot(aes(Month_format, Avg_Duration, fill = Avg_Duration_Status))+
+  geom_hline(yintercept = 60, lty = "dashed", alpha = 0.5)+
   geom_col(col = "black")+
   labs(x = NULL,
        y = "Average practice session length (min)",
        fill = "Status")+
   geom_text(aes(label = Avg_Duration), nudge_y = 5, size = 5)+
+  geom_text(x = "Mar\n '21", aes(y = Average+3),  size = 4, label = "average")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "top",
+        axis.title.y = element_text(size =15),
+        text = element_text(size=15),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank())
 ```
@@ -253,7 +280,7 @@ raw_data%>%
        fill = "Status")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "none")
 ```
 
@@ -280,7 +307,7 @@ inference <- raw_data%>%
        y = "Average practice session (min)")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "none")
 ```
 
@@ -342,7 +369,7 @@ graph_practice <- function(variable, nudge){
   labs(x = NULL,
        y = "Total hours of practice")+
   coord_flip()+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(axis.text.x = element_blank(),
         axis.ticks = element_blank())
 }
@@ -381,7 +408,7 @@ model_data%>%
        subtitle = "The higher the difficulty, the more time it takes to learn a piece")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "none")
 ```
 
@@ -403,7 +430,7 @@ model_data%>%
   labs(x = "Level",
        y = "Total practice hours",
        subtitle = "The higher the difficulty, the more time it takes to learn a piece")+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "none")
 ```
 
@@ -420,7 +447,7 @@ model_data%>%
        subtitle = "There appears to be a linear trend between piece length and total practice time")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "top")
 ```
 
@@ -439,7 +466,7 @@ model_data%>%
        subtitle = "Pieces of a similar difficulty become faster to learn")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "top")
 ```
 
@@ -464,7 +491,7 @@ model_data%>%
        y = "Hours needed to learn a piece",
        col = "Break (over 1 month)",
        subtitle = "Taking a break before finishing a piece might lead to more hours required to learn it")+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "top")
 ```
 
@@ -474,7 +501,9 @@ model_data%>%
 model_data%>%
   select(-Days_Practiced, -Date_End, -Max_Break)%>%
   mutate(Duration = round(Duration),
+         Project = Link,
          Length = round(Length, 1))%>%
+  select(-Link)%>%
   arrange(desc(Date_Start))%>%
   rename(Experience = Cumulative_Duration,
          Started = Date_Start)%>%
@@ -494,10 +523,29 @@ Question: **Can we predict how long it would take to learn a piano piece based o
 
 ## outliers
 
-Given the very limited data at the advanced level (Grade 7 ABRSM), those two pieces will be removed. One is an extreme outlier as well which will significantly impact our models.
+We can see that there are some outliers in our dataset:
 
-```{r}
-model_data <- model_data%>%filter(ABRSM != 7)%>%droplevels()
+* no. 16 and no. 28 are two Advanced (Grade 7 pieces). These are the only two pieces within this category and will be removed as they are both outliers; they will be introduced as I learn more Advanced repertoire (it is also likely that no. 16 is significantly harder than grade 7, but it is a custom arrangement and cannot be assigned a specific grade)
+* no. 14 is an extremely short movement of a piece (a few seconds long) that unites the first and third movement of the same piece and it took very little time to learn
+* no 4 is a piece that I previously learnt but did not track the time spent on a piece (as I wasn't tracking individual times back then). It then took significantly less time to re-learn it
+
+```{r fig.height=7, fig.width=10}
+mod <- glm(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Standard, data = model_data)
+cooksd <- cooks.distance(mod)
+
+autoplot(mod, which = 4:6, nrow = 3, col = 1,
+         data = model_data, 
+         size = 2,
+         colour = "Level", 
+         label.size = 4)+
+  theme_minimal()+
+  scale_colour_tron()
+
+model_data <- model_data%>%
+  filter(ABRSM != 7)%>%
+  filter(Project != "Clementi - Sonatina no 3 - Mov 2")%>%
+  filter(Project != "Bach - Minuet in G - 114")%>%
+  droplevels()
 ```
 
 ## missing values
@@ -515,11 +563,19 @@ There are no missing values in the modelling dataset following the ETL process.
   * **Experience**: total hours practiced before the first practice session on each piece
   * **Length** of the piece: minutes
 
+## near zero variance
+
+We can see that the *Break* feature has low variance (a high ratio of the most common answer "No" to the second most common "Yes"). We can exclude this from the model.
+
+```{r}
+nearZeroVar(model_data, freqCut = 2, uniqueCut = 20, names = TRUE)
+```
+
 ## pre-processing
 
 Let's use some basic standardisation offered by the caret package such as **centering** (subtract mean from values) and **scaling** (divide values by standard deviation).
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 set.seed(123)
 
 # set a backup variable
@@ -542,9 +598,11 @@ model_data$Duration <- y
 
 ## resampling
 
-Given the small size of the dataset, bootstrapping resampling method will be applied.
+Given the small size of the dataset, bootstrapping resampling method will be applied. This will give multiple estimates of out-of-sample error, rather than a single estimate.
 
 ```{r}
+set.seed(123)
+
 train.control <- trainControl(method = "boot",
                               number = 25,
                               search = "random")
@@ -552,7 +610,7 @@ train.control <- trainControl(method = "boot",
 
 ## model selection
 
-```{r cache=TRUE, results='hide'}
+```{r results='hide'}
 # set number of clusters 
 clusters <- 4
 
@@ -563,57 +621,59 @@ cl <- makeCluster(clusters, type = "SOCK")
 registerDoSNOW(cl)
 
 # train models
-model <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
-                  data = model_data,
-                  method = "ranger",
-                  tuneLength = 100,
-                  trControl = train.control)
+model_1 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Standard,
+               data = model_data,
+               method = "ranger",
+               tuneLength = 100,
+               preProcess = c("center", "scale"),
+               trControl = train.control)
 
 
-model2 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
+model_2 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Standard,
                 data = model_data,
                 method = "lmStepAIC",
                 tuneLength = 100,
+                preProcess = c("center", "scale"),
                 trControl = train.control)
 
 
-model3 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
+model_3 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Standard,
                 data = model_data,
                 method = "lm",
                 tuneLength = 100,
+                preProcess = c("center", "scale"),
                 trControl = train.control)
 
-model4 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
+model_4 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Standard,
                 data = model_data,
                 method = "ridge",
                 tuneLength = 100,
+                preProcess = c("center", "scale"),
                 trControl = train.control)
 
-model5 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
+model_5 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Standard,
                 data = model_data,
                 method = "rf",
                 tuneLength = 100,
+                preProcess = c("center", "scale"),
                 trControl = train.control)
 
-model6 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
+model_6 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Standard,
                 data = model_data,
                 method = "gbm",
                 tuneLength = 100,
+                preProcess = c("center", "scale"),
                 trControl = train.control)
 
-model7 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Break + Standard,
+model_7 <- train(Duration ~ ABRSM + Genre + Length + Cumulative_Duration + Standard,
                 data = model_data,
                 method = "pls",
                 tuneLength = 100,
+                preProcess = c("center", "scale"),
                 trControl = train.control)
- 
+
 # shut the instances of R down
 stopCluster(cl)
-
-# compare models
-model_list <- list(ranger = model, lmStepAIC = model2, lm = model3, ridge = model4, rf = model5, gbm = model6, pls = model7)
-
-model_comparison <- resamples(model_list)
 
 # learning curves to indicate overfitting and underfitting
 # hyper parameters 
@@ -627,7 +687,13 @@ We chose the Random Forest model as it was the best performing model. It is know
 * good for non-linearity
 * however, variable importance can be biased if categorical variables have few levels (toward high levels) or are correlated
 
+The model selected had the mtry parameter (number of randomly selected variables used at each split) equal to 6.
+
 ```{r}
+model_list <- list(ranger = model_1, lmStepAIC = model_2, lm = model_3, ridge = model_4, rf = model_5, gbm = model_6, pls = model_7)
+
+model_comparison <- resamples(model_list)
+
 summary(model_comparison)
 ```
 
@@ -636,7 +702,7 @@ summary(model_comparison)
 Based on our regression model, it does not look like we have significant multicollinearity between the full model variables so we can continue with our full model of 6 variables.
 
 ```{r}
-tidy(vif(model3$finalModel))%>%
+tidy(vif(model_3$finalModel))%>%
   rename(VIF = x)%>%
   mutate(VIF = round(VIF, 1))%>%
   arrange(desc(VIF))%>%
@@ -647,7 +713,7 @@ tidy(vif(model3$finalModel))%>%
 ### actuals vs predictions
 
 ```{r}
-selected_model <- model5
+selected_model <- model_5
 
 #Saving the model
 saveRDS(selected_model, file = "model.rda")
@@ -676,7 +742,7 @@ p <- ggplot(model_data2, aes(Predicted, Actual, label = Residuals))+
   coord_cartesian(xlim = c(0,50), ylim = c(0,50))+
   labs(col = NULL)+
   scale_fill_tron()+
-  theme_ipsum_es() +
+  theme_minimal() +
   theme(legend.position = "top")
 
 p
@@ -697,19 +763,19 @@ ggplot(model_data2, aes(Residuals, fill = ..count..))+
   labs(x="Residuals",
        y= "Total occurences")+
   scale_fill_gradient(low="yellow", high="red")+
-  theme_ipsum_es()+
+  theme_minimal()+
   theme(legend.position = "none")
 ```
 
 #### QQ plot / normal probability plot of residuals {-}
 
-Similar to the previous histogram, we can spot some deviations from the normal distribution.
+Similar to the previous histogram, we can spot some deviations from the normal distribution. Overall, we can state that the residuals follow a normal distribution.
 
 ```{r}
 ggplot(model_data2, aes(sample=Residuals))+
   stat_qq(fill = "#DC0000B2", size = 3, shape = 21, col = "black", alpha = 0.75)+
   stat_qq_line(col = "black")+
-  theme_ipsum_es()+
+  theme_minimal()+
   scale_color_tron()+
   scale_fill_tron()+
   labs(x = "Theoretical quantiles", 
@@ -731,7 +797,7 @@ model_data2%>%
   geom_hline(yintercept = 0, alpha = 0.5, size = 3, color = "grey52", lty = 1)+
   geom_point(fill = "#DC0000B2", size = 3, shape = 21, col = "black")+
   geom_smooth(method = "lm", lwd = 0.5, col = "black", se = FALSE, alpha = 0.75)+
-  theme_ipsum_es()+
+  theme_minimal()+
   scale_color_tron()+
   scale_fill_tron()
 ```
@@ -750,7 +816,7 @@ p <- ggplot(model_data2, aes(Actual, Residuals, label = Predicted))+
   geom_smooth(method = "loess", col = "red", se = FALSE, alpha = 0.5)+
   labs(col = NULL)+
   scale_fill_tron()+
-  theme_ipsum_es() +
+  theme_minimal() +
   theme(legend.position = "top")
 
 p
@@ -763,22 +829,22 @@ p
 We can see that the Random Forest performed significantly better than the simpler Linear Regression model. This isn't surprising since there might be non-linear trends within the data, and RFs are known to be more accurate (at the cost of interpretability and computing power).
 
 ```{r}
-tidy(compare_models(model3, model5))%>%
-  kbl(caption = "Model 1 vs model 2")%>%
+tidy(compare_models(model_3, model_5))%>%
+  kbl(caption = "Random Forest vs Linear Regression")%>%
   kable_paper("hover", full_width = F)
 ```
 
 ## How many predictors did the most optimal model have?
 
 ```{r predictors}
-ggplot(model5)+
+ggplot(model_5)+
   geom_line(lwd = 1.25, colour = "black")+
   geom_point(size = 3, shape = 21, fill = "orange", col = "black")+
-  geom_point(aes(x = 6, y = 7.622789), size = 10, shape = 21, fill = "orange", col = "black")+
-  labs(subtitle = "The most optimal model was that with 6 predictors")+
+  geom_point(aes(x = 5, y = 7.281298), size = 10, shape = 21, fill = "orange", col = "black")+
+  labs(subtitle = "The most optimal model was that with 5 predictors")+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()
+  theme_minimal()
 ```
 
 ## What were the most important variables?
@@ -786,7 +852,7 @@ ggplot(model5)+
 The most important variables were shown to be the **length of the piece**, **standard of playing**(performance vs casual) and **experience**(lifetime total practice before first practice session on each piece)
 
 ```{r factors}
-imp <- as.matrix(varImp(model5)$importance)%>%
+imp <- as.matrix(varImp(model_5)$importance)%>%
   as.data.frame()%>%
   rename(Importance = Overall)%>%
   mutate(Feature = as.factor(rownames(.)),
@@ -798,13 +864,13 @@ ggplot(imp, aes(Feature, Importance))+
   geom_text(aes(label = paste(round(Importance), "%", sep = "")), color = "black", size = 3, check_overlap = TRUE)+
   scale_color_tron()+
   scale_fill_tron()+
-  theme_ipsum_es()+
+  theme_minimal()+
   coord_flip()+
   labs(subtitle = "Variable importance ranking")+
   theme(axis.text.x =  element_blank(), 
         axis.ticks = element_blank())
 
-#plot(varImp(model5))
+#plot(varImp(model_5))
 ```
 
 # Limitations
@@ -820,22 +886,21 @@ ggplot(imp, aes(Feature, Importance))+
 
 -   keep practicing, gather more data and refresh this analysis + adjust the model
 -   add a recommender tab to the shiny dashboard to recommend pieces based on specific features
--   connect to the Toggl API for live updates
 
 # Hardest things about this analysis:
 
-* the Extract-Transform-Load process - cleaning the "dirty data" and finding creative ways to input the data on the front-end of the app in order to make it reporting friendly on the back-end
+* the Extract-Transform-Load process - cleaning the "dirty data" and finding creative ways to input the data on the front-end of the app in order to make it reporting-friendly on the back-end
   * especially true for metadata such as Genre, Type of practice, Composer and Piece name, tag pieces as "work in progress", etc
 * automate ways to differentiate between pieces that I came back to vs pieces I only studied once (such whether the maximum difference between two consecutive practice sessions exceeded a threshold)
 * work with very limited data
 
-# Interactive application:
+# Interactive application
 
--   you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/piano-practice-prediction/)
--   <https://peterhontaru.shinyapps.io/piano-practice-prediction/>
+-   you can find an interactive display of this presentation, as well as the model in production at the [following link](https://peterhontaru.shinyapps.io/Piano-Journal/)
+-   <https://peterhontaru.shinyapps.io/Piano-Journal/>
 
-# What's next?
+![Screenshot](www/screenshot.png)
 
--   keep practicing, gather more data and refresh this analysis + adjust the model
--   add a recommender tab to the shiny dashboard to recommend pieces based on specific features
--   connect to the Toggl API for live updates
+```{r eval=FALSE, include=FALSE}
+# bayesian t test + cohen's d test for effect size
+```
