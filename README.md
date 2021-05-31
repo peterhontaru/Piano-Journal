@@ -152,7 +152,6 @@ of charge.
     the model
 -   add a recommender tab to the shiny dashboard to recommend pieces
     based on specific features
--   connect to the Toggl API for live updates
 
 # Extended analysis
 
